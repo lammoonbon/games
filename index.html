@@ -65,6 +65,7 @@
         .collapse.show, .collapsing { display: block !important; visibility: visible !important; }
         .collapse:not(.show) { display: none !important; }
         .navbar-toggler { padding: 0.5rem; outline: none !important; box-shadow: none !important; }
+        /* 🌟 ฝัง SVG ไอคอน 3 ขีด ป้องกันการถูก Tailwind เคลียร์ทิ้ง 🌟 */
         .navbar-toggler-icon { background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2.2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important; }
 
         /* 🌟 Super Vibrant Hero Banner */
@@ -185,7 +186,7 @@
             .medal-val-mobile { font-size: 1rem !important; }
         }
 
-        /* 🌟 สไตล์สำหรับวงแหวน Progress (ใหม่) 🌟 */
+        /* 🌟 สไตล์สำหรับวงแหวน Progress 🌟 */
         .progress-ring { transform: rotate(-90deg); transform-origin: 50% 50%; }
         .progress-ring__circle-bg { stroke: #e2e8f0; transition: stroke 0.3s ease; }
         body.dark-mode .progress-ring__circle-bg { stroke: #334155; }
@@ -195,38 +196,41 @@
 </head>
 <body>
 
-    <!-- Navbar -->
+    <!-- 🌟 แก้ไข Navbar ให้ปุ่ม Login และโหมดกลางคืน อยู่ด้านนอกเสมอ เพื่อให้เห็นในมือถือ 🌟 -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
         <div class="container">
-            <a class="navbar-brand font-bold text-2xl d-flex align-items-center" href="#" onclick="switchView('public-dashboard')">
+            <a class="navbar-brand font-bold text-2xl d-flex align-items-center me-auto" href="#" onclick="switchView('public-dashboard')">
                 <div class="bg-gradient-to-tr from-yellow-400 to-orange-500 p-1 rounded-circle me-2 d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 38px; height: 38px;">
                     <i class="fas fa-trophy text-white" style="font-size: 1.2rem;"></i>
                 </div>
-                <span class="navbar-title-text">SPORTS<span class="text-warning fw-light">CONNECT</span></span>
+                <span class="navbar-title-text d-none d-sm-inline">SPORTS<span class="text-warning fw-light">CONNECT</span></span>
             </a>
             
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <!-- ปุ่มด้านขวาที่แสดงผลตลอดเวลา -->
+            <div class="d-flex align-items-center gap-2 ms-auto order-lg-last">
+                <button class="btn btn-sm btn-outline-light rounded-pill px-2 px-sm-3" onclick="toggleDarkMode()" title="โหมดกลางคืน">
+                    <i class="fas fa-moon" id="darkModeIcon"></i> <span class="d-none d-md-inline ms-1">กลางคืน</span>
+                </button>
+                <button id="btnLogin" class="btn btn-sm bg-gradient-to-r from-yellow-400 to-orange-500 text-dark border-0 rounded-pill px-3 fw-bold shadow" onclick="showAdminLogin()">
+                    <i class="fas fa-lock d-inline d-sm-none"></i> <span class="d-none d-sm-inline"><i class="fas fa-lock me-1"></i> เจ้าหน้าที่</span>
+                </button>
+                <button id="btnLogoutTop" class="btn btn-sm btn-danger border-0 rounded-pill px-3 fw-bold shadow d-none" onclick="logoutAdmin()">
+                    <i class="fas fa-sign-out-alt d-inline d-sm-none"></i> <span class="d-none d-sm-inline"><i class="fas fa-sign-out-alt me-1"></i> ออกจากระบบ</span>
+                </button>
+                
+                <!-- ปุ่ม Navbar Toggler -->
+                <button class="navbar-toggler border-0 ms-1 px-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
             
+            <!-- เมนูนำทาง (ไม่ซ่อนแล้ว เปิดให้คนทั่วไปเห็นเสมอ) -->
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto ps-lg-4 d-none" id="main-nav-links">
+                <ul class="navbar-nav me-auto ps-lg-4" id="main-nav-links">
                     <li class="nav-item"><a class="nav-link fw-medium text-uppercase px-3" href="#" onclick="switchView('public-dashboard')">หน้าแรก</a></li>
                     <li class="nav-item"><a class="nav-link fw-medium text-uppercase px-3" href="#" onclick="switchView('public-medals')">ตารางเหรียญ</a></li>
                     <li class="nav-item"><a class="nav-link fw-medium text-uppercase px-3" href="#" onclick="switchView('public-results')">ผลการแข่งขัน</a></li>
                 </ul>
-                
-                <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0 pb-3 pb-lg-0 ms-auto">
-                    <button class="btn btn-sm btn-outline-light rounded-pill px-3" onclick="toggleDarkMode()">
-                        <i class="fas fa-moon" id="darkModeIcon"></i> โหมดกลางคืน
-                    </button>
-                    <button id="btnLogin" class="btn btn-sm bg-gradient-to-r from-yellow-400 to-orange-500 text-dark border-0 rounded-pill px-4 fw-bold shadow" onclick="showAdminLogin()">
-                        <i class="fas fa-lock me-1"></i> เจ้าหน้าที่
-                    </button>
-                    <button id="btnLogoutTop" class="btn btn-sm btn-danger border-0 rounded-pill px-4 fw-bold shadow d-none" onclick="logoutAdmin()">
-                        <i class="fas fa-sign-out-alt me-1"></i> ออกจากระบบ
-                    </button>
-                </div>
             </div>
         </div>
     </nav>
@@ -302,7 +306,7 @@
                         </div>
                     </div>
                     
-                    <!-- 🌟 ส่วนใหม่: Progress ความคืบหน้าการแข่งขัน แทน Pie Chart 🌟 -->
+                    <!-- Progress ความคืบหน้าการแข่งขัน -->
                     <div class="col-lg-4 mt-4 mt-lg-0">
                         <div class="chart-card h-100 d-flex flex-column">
                             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -682,13 +686,13 @@
             setTimeout(() => { animateValue("c-school", 0, db.schools.length, 1000); animateValue("c-gold", 0, totals.tGold, 1000); animateValue("c-silver", 0, totals.tSilver, 1000); animateValue("c-bronze", 0, totals.tBronze, 1000); }, 100);
 
             const top3 = db.schools.slice(0, 3); let podiumHTML = "";
-            if(top3[1]) podiumHTML += `<div class="podium-item podium-2 d-flex flex-column justify-content-between"><div><div class="medal-badge bg-silver shadow-lg">2</div><img src="${top3[1].logo}" class="w-16 h-16 mx-auto bg-white rounded-circle p-1 mb-2 shadow object-cover"><div class="fw-bolder text-sm text-truncate px-1">${top3[1].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-black mt-2 py-2 bg-dark text-white bg-opacity-10 rounded-pill"><i class="fas fa-medal text-dark opacity-50"></i> ทอง ${top3[1].gold}</div></div>`;
+            // 🌟 อัปเดตคำอธิบายเหรียญให้ถูกต้อง 🌟
+            if(top3[1]) podiumHTML += `<div class="podium-item podium-2 d-flex flex-column justify-content-between"><div><div class="medal-badge bg-silver shadow-lg">2</div><img src="${top3[1].logo}" class="w-16 h-16 mx-auto bg-white rounded-circle p-1 mb-2 shadow object-cover"><div class="fw-bolder text-sm text-truncate px-1">${top3[1].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-black mt-2 py-2 bg-dark text-white bg-opacity-10 rounded-pill"><i class="fas fa-medal text-dark opacity-50"></i> เงิน ${top3[1].silver}</div></div>`;
             if(top3[0]) podiumHTML += `<div class="podium-item podium-1 d-flex flex-column justify-content-between"><div><i class="fas fa-crown text-white text-4xl mb-3" style="filter: drop-shadow(0 0 15px rgba(255,255,255,1));"></i><br><div class="medal-badge bg-gold shadow-lg" style="transform: scale(1.3); border-color:#FFD700;">1</div><img src="${top3[0].logo}" class="w-24 h-24 mx-auto bg-white rounded-circle p-2 mb-3 shadow-lg object-cover"><div class="fw-black text-xl text-truncate px-1 text-white" style="text-shadow: 0 2px 4px rgba(0,0,0,0.3);">${top3[0].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-black mt-2 py-2 bg-black bg-opacity-25 rounded-pill shadow-inner text-lg"><i class="fas fa-medal text-warning"></i> ทอง ${top3[0].gold}</div></div>`;
-            if(top3[2]) podiumHTML += `<div class="podium-item podium-3 d-flex flex-column justify-content-between"><div><div class="medal-badge bg-bronze shadow-lg">3</div><img src="${top3[2].logo}" class="w-16 h-16 mx-auto bg-white rounded-circle p-1 mb-2 shadow object-cover"><div class="fw-bolder text-sm text-truncate px-1">${top3[2].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-black mt-2 py-2 bg-white bg-opacity-25 rounded-pill"><i class="fas fa-medal opacity-50 text-dark"></i> ทอง ${top3[2].gold}</div></div>`;
+            if(top3[2]) podiumHTML += `<div class="podium-item podium-3 d-flex flex-column justify-content-between"><div><div class="medal-badge bg-bronze shadow-lg">3</div><img src="${top3[2].logo}" class="w-16 h-16 mx-auto bg-white rounded-circle p-1 mb-2 shadow object-cover"><div class="fw-bolder text-sm text-truncate px-1">${top3[2].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-black mt-2 py-2 bg-white bg-opacity-25 rounded-pill"><i class="fas fa-medal opacity-50 text-dark"></i> ทองแดง ${top3[2].bronze}</div></div>`;
             document.getElementById('podium-container').innerHTML = podiumHTML;
             
             renderDashboardLeaderboard(db.schools);
-            // 🌟 2. เรียกใช้งานฟังก์ชันอัปเดตวงแหวน Progress
             updateProgressUI();
         }
 
@@ -740,19 +744,53 @@
             document.querySelectorAll('.view-section').forEach(el => { el.classList.remove('active'); el.classList.remove('animate-up');});
             const view = document.getElementById(viewId); view.classList.add('active');
             view.querySelectorAll('.animate-up').forEach(el => { el.style.animation = 'none'; el.offsetHeight; el.style.animation = null; }); window.scrollTo({ top: 0, behavior: 'smooth' });
-            if(viewId === 'public-dashboard') renderPublicDashboard(); const nav = document.getElementById('navbarNav'); if (nav.classList.contains('show')) document.querySelector('.navbar-toggler').click();
+            if(viewId === 'public-dashboard') renderPublicDashboard(); 
+            
+            // ปิดเมนูหลังจากคลิกเลือกหน้า
+            const nav = document.getElementById('navbarNav'); 
+            if (nav.classList.contains('show')) {
+                document.querySelector('.navbar-toggler').click(); 
+            }
         }
 
         function toggleDarkMode() { document.body.classList.toggle('dark-mode'); const icon = document.getElementById('darkModeIcon'); if(document.body.classList.contains('dark-mode')) { icon.classList.replace('fa-moon', 'fa-sun'); } else { icon.classList.replace('fa-sun', 'fa-moon'); } }
 
         function showAdminLogin() {
-            const nav = document.getElementById('navbarNav'); if (nav.classList.contains('show')) document.querySelector('.navbar-toggler').click();
+            const nav = document.getElementById('navbarNav'); 
+            if (nav.classList.contains('show')) {
+                document.querySelector('.navbar-toggler').click(); 
+            }
             Swal.fire({ title: '<span class="fw-bold">เข้าสู่ระบบจัดการ</span>', html: '<p class="text-muted">กรุณากรอกรหัส PIN (1234)</p>', input: 'password', showCancelButton: true, confirmButtonText: 'เข้าสู่ระบบ', cancelButtonText: 'ยกเลิก', confirmButtonColor: '#0A2463', borderRadius: '1rem', preConfirm: (pin) => { return pin === '1234' ? true : Swal.showValidationMessage('PIN ไม่ถูกต้อง!'); }
             }).then((res) => { 
-                if (res.isConfirmed) { isAdminLoggedIn = true; fireConfetti(); document.getElementById('main-nav-links').classList.remove('d-none'); document.getElementById('btnLogin').classList.add('d-none'); document.getElementById('btnLogoutTop').classList.remove('d-none'); Swal.fire({icon: 'success', title: 'สำเร็จ', timer: 1000, showConfirmButton: false}).then(() => { switchView('admin-dashboard'); updateAdminStats(); }); } 
+                if (res.isConfirmed) { 
+                    isAdminLoggedIn = true; 
+                    fireConfetti(); 
+                    
+                    // สลับปุ่มเข้าสู่ระบบเป็นปุ่มออกจากระบบ
+                    document.getElementById('btnLogin').classList.add('d-none'); 
+                    document.getElementById('btnLogoutTop').classList.remove('d-none'); 
+                    
+                    Swal.fire({icon: 'success', title: 'สำเร็จ', timer: 1000, showConfirmButton: false}).then(() => { 
+                        switchView('admin-dashboard'); 
+                        updateAdminStats(); 
+                    }); 
+                } 
             });
         }
-        function logoutAdmin() { Swal.fire({ title: 'ออกจากระบบ?', icon: 'question', showCancelButton: true, confirmButtonText: 'ใช่', confirmButtonColor: '#D8315B' }).then((res) => { if(res.isConfirmed) { isAdminLoggedIn = false; document.getElementById('main-nav-links').classList.add('d-none'); document.getElementById('btnLogin').classList.remove('d-none'); document.getElementById('btnLogoutTop').classList.add('d-none'); switchView('public-dashboard'); } }); }
+        
+        function logoutAdmin() { 
+            Swal.fire({ title: 'ออกจากระบบ?', icon: 'question', showCancelButton: true, confirmButtonText: 'ใช่', confirmButtonColor: '#D8315B' }).then((res) => { 
+                if(res.isConfirmed) { 
+                    isAdminLoggedIn = false; 
+                    
+                    // สลับปุ่มออกจากระบบกลับเป็นปุ่มเข้าสู่ระบบ
+                    document.getElementById('btnLogin').classList.remove('d-none'); 
+                    document.getElementById('btnLogoutTop').classList.add('d-none'); 
+                    
+                    switchView('public-dashboard'); 
+                } 
+            }); 
+        }
         
         function showAdminTab(tabId) { document.querySelectorAll('.admin-tab').forEach(el => el.style.display = 'none'); const tab = document.getElementById(tabId); tab.style.display = 'block'; tab.classList.add('animate-up'); document.querySelectorAll('#admin-dashboard .list-group-item').forEach(btn => btn.classList.remove('active', 'shadow-sm')); event.currentTarget.classList.add('active', 'shadow-sm'); }
         
