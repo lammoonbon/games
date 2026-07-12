@@ -249,8 +249,8 @@
                         "รู้แพ้ รู้ชนะ รู้อภัย มุ่งสู่อนาคตที่สดใสด้วยกีฬา"
                     </p>
                     <div class="mt-5 animate-up delay-300 d-flex justify-content-center gap-3 flex-wrap">
-                        <span class="badge bg-white text-dark px-4 py-3 text-lg rounded-pill shadow-lg fw-bold"><i class="far fa-calendar-alt text-primary me-2"></i> 17-21 ต.ค. 2569</span>
-                        <span class="badge bg-dark text-white px-4 py-3 text-lg rounded-pill shadow-lg fw-bold border border-white border-opacity-25"><i class="fas fa-map-marker-alt text-danger me-2"></i> สนามกีฬาโรงเรียนชุมชนจระเข้หิน</span>
+                        <span class="badge bg-white text-dark px-4 py-3 text-lg rounded-pill shadow-lg fw-bold"><i class="far fa-calendar-alt text-primary me-2"></i> 10-15 ต.ค. 2569</span>
+                        <span class="badge bg-dark text-white px-4 py-3 text-lg rounded-pill shadow-lg fw-bold border border-white border-opacity-25"><i class="fas fa-map-marker-alt text-danger me-2"></i> สนามกีฬากลางจังหวัด</span>
                     </div>
                 </div>
             </div>
@@ -466,10 +466,10 @@
                         <div class="card shadow-sm border-0 rounded-4 mb-4 dark:bg-gray-800">
                             <div class="card-body p-4 p-lg-5">
                                 <form onsubmit="saveSiteSettings(event)">
-                                    <div class="mb-4"><label class="form-label fw-bold dark:text-blue">ชื่อเว็บไซต์ (แสดงที่หน้าแรกและด้านบน)</label><input type="text" class="form-control form-control-lg bg-light" id="settingSiteName" value="กีฬากลุ่มเครือข่ายสัมพันธ์ 2026" required></div>
-                                    <div class="mb-4"><label class="form-label fw-bold dark:text-blue">โลโก้เว็บไซต์ (URL รูปภาพ)</label><input type="url" class="form-control form-control-lg bg-light" id="settingSiteLogo" value="https://cdn-icons-png.flaticon.com/512/5551/5551284.png" required></div>
-                                    <div class="mb-4"><label class="form-label fw-bold dark:text-blue">ชุดสีหลัก (Theme Color)</label><select class="form-select form-select-lg bg-light" id="settingSiteTheme"><option value="default">สดใส (แดง - น้ำเงิน)</option><option value="ocean">มหาสมุทร (เขียว - ฟ้า)</option><option value="royal">หรูหรา (ม่วงเข้ม - แดงเข้ม)</option><option value="midnight">เคร่งขรึม (ดำ - เทาเข้ม)</option></select></div>
-                                    <div class="mb-5"><label class="form-label fw-bold dark:text-blue">รหัส PIN สำหรับเจ้าหน้าที่</label><input type="password" class="form-control form-control-lg bg-light" id="settingAdminPin" value="1234" required><div class="form-text mt-2 dark:text-gray-400">ค่าเริ่มต้นคือ 1234 (สามารถเปลี่ยนเป็นตัวเลขหรือตัวอักษรอื่นได้)</div></div>
+                                    <div class="mb-4"><label class="form-label fw-bold dark:text-white">ชื่อเว็บไซต์ (แสดงที่หน้าแรกและด้านบน)</label><input type="text" class="form-control form-control-lg bg-light" id="settingSiteName" value="กีฬากลุ่มเครือข่ายสัมพันธ์ 2026" required></div>
+                                    <div class="mb-4"><label class="form-label fw-bold dark:text-white">โลโก้เว็บไซต์ (URL รูปภาพ)</label><input type="url" class="form-control form-control-lg bg-light" id="settingSiteLogo" value="https://cdn-icons-png.flaticon.com/512/5551/5551284.png" required></div>
+                                    <div class="mb-4"><label class="form-label fw-bold dark:text-white">ชุดสีหลัก (Theme Color)</label><select class="form-select form-select-lg bg-light" id="settingSiteTheme"><option value="default">สดใส (แดง - น้ำเงิน)</option><option value="ocean">มหาสมุทร (เขียว - ฟ้า)</option><option value="royal">หรูหรา (ม่วงเข้ม - แดงเข้ม)</option><option value="midnight">เคร่งขรึม (ดำ - เทาเข้ม)</option></select></div>
+                                    <div class="mb-5"><label class="form-label fw-bold dark:text-white">รหัส PIN สำหรับเจ้าหน้าที่</label><input type="password" class="form-control form-control-lg bg-light" id="settingAdminPin" value="1234" required><div class="form-text mt-2 dark:text-gray-400">รหัสผ่านถูกบันทึกลงฐานข้อมูลส่วนกลาง (เปลี่ยนเครื่องก็ยังใช้รหัสเดียวกัน)</div></div>
                                     <div class="border-top pt-4 text-end"><button type="submit" class="btn btn-primary btn-lg px-5 fw-bold rounded-pill shadow-lg bg-gradient-to-r from-blue-500 to-indigo-600 border-0"><i class="fas fa-save me-2"></i> บันทึกการตั้งค่า</button></div>
                                 </form>
                             </div>
@@ -574,6 +574,35 @@
             if(pinInput) pinInput.value = currentAdminPin;
         }
 
+        // 🌟 ฟังก์ชันนำการตั้งค่ามาแสดงผล (ใช้ร่วมกันตอนดึงจาก DB) 🌟
+        function applySiteSettings(data) {
+            const { site_name, site_logo, site_theme, admin_pin } = data;
+            if(site_name) {
+                document.getElementById('settingSiteName').value = site_name;
+                document.querySelectorAll('.site-title-text').forEach(el => el.innerText = site_name);
+                document.querySelectorAll('.navbar-title-text').forEach(el => el.innerHTML = site_name);
+                document.title = site_name;
+            }
+            if(site_logo) {
+                document.getElementById('settingSiteLogo').value = site_logo;
+                const logoEl = document.getElementById('displaySiteLogo'); if(logoEl) logoEl.src = site_logo;
+                const faviconEl = document.getElementById('dynamic-favicon'); if(faviconEl) faviconEl.href = site_logo;
+            }
+            if(site_theme) {
+                document.getElementById('settingSiteTheme').value = site_theme;
+                const root = document.documentElement;
+                if(site_theme === 'ocean') { root.style.setProperty('--primary-blue', '#028090'); root.style.setProperty('--primary-red', '#00BFB2'); } 
+                else if(site_theme === 'royal') { root.style.setProperty('--primary-blue', '#4A0E4E'); root.style.setProperty('--primary-red', '#81171B'); } 
+                else if(site_theme === 'midnight') { root.style.setProperty('--primary-blue', '#141E30'); root.style.setProperty('--primary-red', '#243B55'); } 
+                else { root.style.setProperty('--primary-blue', '#0A2463'); root.style.setProperty('--primary-red', '#D8315B'); }
+            }
+            if(admin_pin) {
+                currentAdminPin = admin_pin;
+                const pinInput = document.getElementById('settingAdminPin');
+                if(pinInput) pinInput.value = admin_pin;
+            }
+        }
+
         /* --- 🌟 ฟังก์ชันโหลดข้อมูลจาก SUPABASE 🌟 --- */
         async function loadDataFromSupabase() {
             if (!supabaseClient) {
@@ -586,12 +615,13 @@
                 // แสดง Loading
                 Swal.fire({ title: 'กำลังโหลดข้อมูลจากฐานข้อมูล...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
                 
-                // ดึงข้อมูลทั้ง 4 ตารางพร้อมกัน
-                const [resSports, resAges, resSchools, resResults] = await Promise.all([
+                // ดึงข้อมูลทั้ง 5 ตารางพร้อมกัน
+                const [resSports, resAges, resSchools, resResults, resSettings] = await Promise.all([
                     supabaseClient.from('sports').select('name'),
                     supabaseClient.from('age_groups').select('name'),
                     supabaseClient.from('schools').select('*'),
-                    supabaseClient.from('results').select('*')
+                    supabaseClient.from('results').select('*'),
+                    supabaseClient.from('settings').select('*').eq('id', 1).single()
                 ]);
 
                 // อัปเดตตัวแปร db (ถ้ามีข้อมูลให้ใช้ข้อมูลใหม่ ถ้าไม่มีให้เป็น Array ว่าง)
@@ -599,6 +629,9 @@
                 if (resAges.data) db.ageGroups = resAges.data.map(a => a.name);
                 if (resSchools.data) db.schools = resSchools.data;
                 if (resResults.data) db.results = resResults.data;
+
+                // นำการตั้งค่าและ PIN จาก DB มาใช้งาน
+                if (resSettings.data) applySiteSettings(resSettings.data);
 
                 processDataAndRender();
                 Swal.close();
@@ -714,25 +747,37 @@
         function animateValue(id, start, end, duration) { const obj = document.getElementById(id); if(!obj) return; let startTimestamp = null; const step = (timestamp) => { if (!startTimestamp) startTimestamp = timestamp; const progress = Math.min((timestamp - startTimestamp) / duration, 1); obj.innerHTML = Math.floor(progress * (end - start) + start); if (progress < 1) { window.requestAnimationFrame(step); } }; window.requestAnimationFrame(step); }
         function fireConfetti() { var duration = 2.5 * 1000; var animationEnd = Date.now() + duration; var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000 }; function randomInRange(min, max) { return Math.random() * (max - min) + min; } var interval = setInterval(function() { var timeLeft = animationEnd - Date.now(); if (timeLeft <= 0) { return clearInterval(interval); } var particleCount = 50 * (timeLeft / duration); confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } })); confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } })); }, 250); }
 
-        function saveSiteSettings(e) {
+        async function saveSiteSettings(e) {
             e.preventDefault();
             const siteName = document.getElementById('settingSiteName').value; const siteLogo = document.getElementById('settingSiteLogo').value; const siteTheme = document.getElementById('settingSiteTheme').value;
             const adminPin = document.getElementById('settingAdminPin').value;
 
-            // บันทึกลง LocalStorage (หน่วยความจำเบราว์เซอร์)
-            localStorage.setItem('siteName', siteName);
-            localStorage.setItem('siteLogo', siteLogo);
-            localStorage.setItem('siteTheme', siteTheme);
-            localStorage.setItem('adminPin', adminPin);
-            
-            currentAdminPin = adminPin; // อัปเดตตัวแปรระบบทันที
-
-            document.querySelectorAll('.site-title-text').forEach(el => el.innerText = siteName); document.querySelectorAll('.navbar-title-text').forEach(el => el.innerHTML = siteName); document.title = siteName;
-            const logoEl = document.getElementById('displaySiteLogo'); if(logoEl) logoEl.src = siteLogo;
-            const faviconEl = document.getElementById('dynamic-favicon'); if(faviconEl) faviconEl.href = siteLogo;
-            const root = document.documentElement;
-            if(siteTheme === 'ocean') { root.style.setProperty('--primary-blue', '#028090'); root.style.setProperty('--primary-red', '#00BFB2'); } else if(siteTheme === 'royal') { root.style.setProperty('--primary-blue', '#4A0E4E'); root.style.setProperty('--primary-red', '#81171B'); } else if(siteTheme === 'midnight') { root.style.setProperty('--primary-blue', '#141E30'); root.style.setProperty('--primary-red', '#243B55'); } else { root.style.setProperty('--primary-blue', '#0A2463'); root.style.setProperty('--primary-red', '#D8315B'); }
-            Swal.fire({icon: 'success', title: 'บันทึกการตั้งค่าสำเร็จ', timer: 1500, showConfirmButton: false});
+            if (supabaseClient) {
+                Swal.fire({ title: 'กำลังบันทึกลงฐานข้อมูล...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                
+                // 🌟 บันทึกการตั้งค่าทั้งหมด รวมถึงรหัส PIN ลงฐานข้อมูล Supabase 🌟
+                const { error } = await supabaseClient.from('settings').upsert({ 
+                    id: 1, 
+                    site_name: siteName, 
+                    site_logo: siteLogo, 
+                    site_theme: siteTheme, 
+                    admin_pin: adminPin 
+                });
+                
+                if (error) return Swal.fire('Error', error.message, 'error');
+                
+                applySiteSettings({ site_name: siteName, site_logo: siteLogo, site_theme: siteTheme, admin_pin: adminPin });
+                Swal.fire({icon: 'success', title: 'บันทึกการตั้งค่าสำเร็จ', timer: 1500, showConfirmButton: false});
+            } else {
+                // บันทึกลง LocalStorage (โหมดออฟไลน์)
+                localStorage.setItem('siteName', siteName);
+                localStorage.setItem('siteLogo', siteLogo);
+                localStorage.setItem('siteTheme', siteTheme);
+                localStorage.setItem('adminPin', adminPin);
+                
+                applySiteSettings({ site_name: siteName, site_logo: siteLogo, site_theme: siteTheme, admin_pin: adminPin });
+                Swal.fire({icon: 'success', title: 'บันทึกการตั้งค่าสำเร็จ', timer: 1500, showConfirmButton: false});
+            }
         }
 
         function renderAdminSchools() {
