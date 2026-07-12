@@ -60,9 +60,12 @@
         body.dark-mode ::-webkit-scrollbar-thumb { background: #475569; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* Navbar Glassmorphism */
+        /* Navbar Glassmorphism & บังคับแก้ไขปัญหาเมนูมือถือ (Tailwind vs Bootstrap) */
         .navbar-custom { background: rgba(10, 36, 99, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
-        .collapse.show, .collapsing { visibility: visible !important; }
+        .collapse.show, .collapsing { display: block !important; visibility: visible !important; }
+        .collapse:not(.show) { display: none !important; }
+        .navbar-toggler { padding: 0.5rem; outline: none !important; box-shadow: none !important; }
+        .navbar-toggler-icon { background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2.2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important; }
 
         /* 🌟 Super Vibrant Hero Banner */
         @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
