@@ -179,39 +179,42 @@
 </head>
 <body>
 
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
-        <div class="container">
+        <div class="container d-flex flex-wrap align-items-center justify-content-between">
             <a class="navbar-brand font-bold text-2xl d-flex align-items-center" href="#" onclick="switchView('public-dashboard')">
                 <div class="bg-gradient-to-tr from-yellow-400 to-orange-500 p-1 rounded-circle me-2 d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 38px; height: 38px;">
                     <i class="fas fa-trophy text-white" style="font-size: 1.2rem;"></i>
                 </div>
-                <span class="navbar-title-text">SPORTS<span class="text-warning fw-light">CONNECT</span></span>
+                <span class="navbar-title-text d-none d-sm-inline">SPORTS<span class="text-warning fw-light">CONNECT</span></span>
+                <span class="navbar-title-text d-inline d-sm-none text-xl">SPORTS</span>
             </a>
             
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <!-- 🌟 ย้ายกลุ่มปุ่มระบบและปุ่มล็อกอินออกมาไว้ด้านนอกสุด (ขวาบน) เพื่อให้แสดงตลอดเวลาในทุกอุปกรณ์ 🌟 -->
+            <div class="d-flex align-items-center gap-2 gap-md-3 ms-auto me-1 order-lg-3">
+                <button class="btn btn-sm btn-outline-light rounded-pill px-2 px-md-3" onclick="toggleDarkMode()">
+                    <i class="fas fa-moon" id="darkModeIcon"></i><span class="d-none d-md-inline ms-1"> โหมดกลางคืน</span>
+                </button>
+                <button id="btnLogin" class="btn btn-sm bg-gradient-to-r from-yellow-400 to-orange-500 text-dark border-0 rounded-pill px-3 px-md-4 fw-bold shadow" onclick="showAdminLogin()">
+                    <i class="fas fa-lock me-1"></i><span class="d-none d-sm-inline"> เจ้าหน้าที่</span>
+                </button>
+                <button id="btnLogoutTop" class="btn btn-sm btn-danger border-0 rounded-pill px-3 px-md-4 fw-bold shadow d-none" onclick="logoutAdmin()">
+                    <i class="fas fa-sign-out-alt me-1"></i><span class="d-none d-sm-inline"> ออกจากระบบ</span>
+                </button>
+                
+                <!-- ปุ่มเมนู 3 ขีด -->
+                <button class="navbar-toggler border-0 px-1 ms-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
             
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <!-- 🌟 เอาคลาส d-none ออก เพื่อให้แสดงเมนูตลอดเวลา 🌟 -->
+            <!-- เมนูนำทาง (ซ่อนอัตโนมัติในมือถือ และกางออกเมื่อกดปุ่ม 3 ขีด) -->
+            <div class="collapse navbar-collapse order-lg-2" id="navbarNav">
                 <ul class="navbar-nav me-auto ps-lg-4" id="main-nav-links">
                     <li class="nav-item"><a class="nav-link fw-medium text-uppercase px-3" href="#" onclick="switchView('public-dashboard')">หน้าแรก</a></li>
                     <li class="nav-item"><a class="nav-link fw-medium text-uppercase px-3" href="#" onclick="switchView('public-medals')">ตารางเหรียญ</a></li>
                     <li class="nav-item"><a class="nav-link fw-medium text-uppercase px-3" href="#" onclick="switchView('public-results')">ผลการแข่งขัน</a></li>
                 </ul>
-                
-                <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0 pb-3 pb-lg-0 ms-auto">
-                    <button class="btn btn-sm btn-outline-light rounded-pill px-3" onclick="toggleDarkMode()">
-                        <i class="fas fa-moon" id="darkModeIcon"></i> โหมดกลางคืน
-                    </button>
-                    <!-- 🌟 แสดงปุ่มเข้าสู่ระบบตลอดเวลา 🌟 -->
-                    <button id="btnLogin" class="btn btn-sm bg-gradient-to-r from-yellow-400 to-orange-500 text-dark border-0 rounded-pill px-4 fw-bold shadow" onclick="showAdminLogin()">
-                        <i class="fas fa-lock me-1"></i> เจ้าหน้าที่
-                    </button>
-                    <button id="btnLogoutTop" class="btn btn-sm btn-danger border-0 rounded-pill px-4 fw-bold shadow d-none" onclick="logoutAdmin()">
-                        <i class="fas fa-sign-out-alt me-1"></i> ออกจากระบบ
-                    </button>
-                </div>
             </div>
         </div>
     </nav>
@@ -776,10 +779,20 @@
             setTimeout(() => { animateValue("c-school", 0, db.schools.length, 1000); animateValue("c-gold", 0, totals.tGold, 1000); animateValue("c-silver", 0, totals.tSilver, 1000); animateValue("c-bronze", 0, totals.tBronze, 1000); }, 100);
 
             const top3 = db.schools.slice(0, 3); let podiumHTML = "";
-            // 🌟 แก้ไขแท่นรางวัล ไม่ให้กรอบทับกัน และแสดง ทอง เงิน ทองแดง ให้ครบถ้วน 🌟
-            if(top3[1]) podiumHTML += `<div class="podium-item podium-2 d-flex flex-column align-items-center"><div><div class="medal-badge bg-silver shadow-lg">2</div><img src="${top3[1].logo}" class="w-16 h-16 mx-auto bg-white rounded-circle p-1 mb-2 shadow object-cover"><div class="fw-bolder text-sm text-truncate px-1">${top3[1].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-bold mt-auto py-2 px-2 w-100 bg-dark text-white bg-opacity-10 rounded-pill small">🥇${top3[1].gold||0} 🥈${top3[1].silver||0} 🥉${top3[1].bronze||0}</div></div>`;
-            if(top3[0]) podiumHTML += `<div class="podium-item podium-1 d-flex flex-column align-items-center"><div><i class="fas fa-crown text-white text-4xl mb-3" style="filter: drop-shadow(0 0 15px rgba(255,255,255,1));"></i><br><div class="medal-badge bg-gold shadow-lg" style="transform: scale(1.3); border-color:#FFD700;">1</div><img src="${top3[0].logo}" class="w-24 h-24 mx-auto bg-white rounded-circle p-2 mb-3 shadow-lg object-cover"><div class="fw-black text-xl text-truncate px-1 text-white" style="text-shadow: 0 2px 4px rgba(0,0,0,0.3);">${top3[0].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-bold mt-auto py-2 px-2 w-100 bg-black bg-opacity-25 rounded-pill shadow-inner text-sm">🥇${top3[0].gold||0} 🥈${top3[0].silver||0} 🥉${top3[0].bronze||0}</div></div>`;
-            if(top3[2]) podiumHTML += `<div class="podium-item podium-3 d-flex flex-column align-items-center"><div><div class="medal-badge bg-bronze shadow-lg">3</div><img src="${top3[2].logo}" class="w-16 h-16 mx-auto bg-white rounded-circle p-1 mb-2 shadow object-cover"><div class="fw-bolder text-sm text-truncate px-1">${top3[2].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-bold mt-auto py-2 px-2 w-100 bg-white bg-opacity-25 rounded-pill small text-dark">🥇${top3[2].gold||0} 🥈${top3[2].silver||0} 🥉${top3[2].bronze||0}</div></div>`;
+            
+            // 🌟 สร้างฟังก์ชันช่วยสร้างป้ายเหรียญรวม แนวนอน (บรรทัดเดียว) 🌟
+            const getStats = (school) => `
+                <div class="fw-bold mt-auto py-1 px-2 w-100 bg-black bg-opacity-25 rounded-pill shadow-inner" style="font-size: 0.75rem; white-space: nowrap; display:flex; justify-content:space-evenly; align-items:center;">
+                    <span class="text-warning" title="ทอง">🥇${school.gold||0}</span>
+                    <span class="text-light" title="เงิน">🥈${school.silver||0}</span>
+                    <span style="color:#ffaa77" title="ทองแดง">🥉${school.bronze||0}</span>
+                </div>
+            `;
+
+            // เพิ่มสไตล์ max-width ให้จำกัดความกว้างของชื่อโรงเรียน ป้องกันการดันกรอบ
+            if(top3[1]) podiumHTML += `<div class="podium-item podium-2 d-flex flex-column align-items-center"><div><div class="medal-badge bg-silver shadow-lg">2</div><img src="${top3[1].logo}" class="w-16 h-16 mx-auto bg-white rounded-circle p-1 mb-2 shadow object-cover"><div class="fw-bolder text-sm text-truncate px-1" style="max-width:90px;">${top3[1].name.replace('โรงเรียน','ร.ร.')}</div></div>${getStats(top3[1])}</div>`;
+            if(top3[0]) podiumHTML += `<div class="podium-item podium-1 d-flex flex-column align-items-center"><div><i class="fas fa-crown text-white text-4xl mb-3" style="filter: drop-shadow(0 0 15px rgba(255,255,255,1));"></i><br><div class="medal-badge bg-gold shadow-lg" style="transform: scale(1.3); border-color:#FFD700;">1</div><img src="${top3[0].logo}" class="w-24 h-24 mx-auto bg-white rounded-circle p-2 mb-3 shadow-lg object-cover"><div class="fw-black text-xl text-truncate px-1 text-white" style="text-shadow: 0 2px 4px rgba(0,0,0,0.3); max-width:120px;">${top3[0].name.replace('โรงเรียน','ร.ร.')}</div></div>${getStats(top3[0])}</div>`;
+            if(top3[2]) podiumHTML += `<div class="podium-item podium-3 d-flex flex-column align-items-center"><div><div class="medal-badge bg-bronze shadow-lg">3</div><img src="${top3[2].logo}" class="w-16 h-16 mx-auto bg-white rounded-circle p-1 mb-2 shadow object-cover"><div class="fw-bolder text-sm text-truncate px-1" style="max-width:90px;">${top3[2].name.replace('โรงเรียน','ร.ร.')}</div></div>${getStats(top3[2])}</div>`;
             
             document.getElementById('podium-container').innerHTML = podiumHTML;
             
