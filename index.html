@@ -128,6 +128,12 @@
         .a4-preview h2, .a4-preview h4, .a4-preview p { color: #000; }
         @media print { body * { visibility: hidden; } #pdf-content-wrapper, #pdf-content-wrapper * { visibility: visible; } #pdf-content-wrapper { position: absolute; left: 0; top: 0; width: 100%; } .pdf-scroll-wrapper { padding: 0; background: transparent; box-shadow: none; } }
 
+        /* 🌟 บังคับแสดงไอคอนเมนู 3 ขีดเสมอ ป้องกันการหายเมื่ออัปโหลดขึ้น Server 🌟 */
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='round' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+        }
+        .navbar-toggler { border-color: rgba(255,255,255,0.5) !important; }
+
         .leaderboard-row { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); border-radius: 1rem; background-color: transparent; }
         .leaderboard-row:hover { transform: scale(1.02) translateX(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); background-color: #ffffff; z-index: 2; position: relative; }
         body.dark-mode .leaderboard-row:hover { background-color: #334155; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
@@ -182,12 +188,13 @@
                 <span class="navbar-title-text">SPORTS<span class="text-warning fw-light">CONNECT</span></span>
             </a>
             
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto ps-lg-4 d-none" id="main-nav-links">
+                <!-- 🌟 เอาคลาส d-none ออก เพื่อให้แสดงเมนูตลอดเวลา 🌟 -->
+                <ul class="navbar-nav me-auto ps-lg-4" id="main-nav-links">
                     <li class="nav-item"><a class="nav-link fw-medium text-uppercase px-3" href="#" onclick="switchView('public-dashboard')">หน้าแรก</a></li>
                     <li class="nav-item"><a class="nav-link fw-medium text-uppercase px-3" href="#" onclick="switchView('public-medals')">ตารางเหรียญ</a></li>
                     <li class="nav-item"><a class="nav-link fw-medium text-uppercase px-3" href="#" onclick="switchView('public-results')">ผลการแข่งขัน</a></li>
@@ -197,6 +204,7 @@
                     <button class="btn btn-sm btn-outline-light rounded-pill px-3" onclick="toggleDarkMode()">
                         <i class="fas fa-moon" id="darkModeIcon"></i> โหมดกลางคืน
                     </button>
+                    <!-- 🌟 แสดงปุ่มเข้าสู่ระบบตลอดเวลา 🌟 -->
                     <button id="btnLogin" class="btn btn-sm bg-gradient-to-r from-yellow-400 to-orange-500 text-dark border-0 rounded-pill px-4 fw-bold shadow" onclick="showAdminLogin()">
                         <i class="fas fa-lock me-1"></i> เจ้าหน้าที่
                     </button>
@@ -768,9 +776,11 @@
             setTimeout(() => { animateValue("c-school", 0, db.schools.length, 1000); animateValue("c-gold", 0, totals.tGold, 1000); animateValue("c-silver", 0, totals.tSilver, 1000); animateValue("c-bronze", 0, totals.tBronze, 1000); }, 100);
 
             const top3 = db.schools.slice(0, 3); let podiumHTML = "";
-            if(top3[1]) podiumHTML += `<div class="podium-item podium-2 d-flex flex-column justify-content-between"><div><div class="medal-badge bg-silver shadow-lg">2</div><img src="${top3[1].logo}" class="w-16 h-16 mx-auto bg-white rounded-circle p-1 mb-2 shadow object-cover"><div class="fw-bolder text-sm text-truncate px-1">${top3[1].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-black mt-2 py-2 bg-dark text-white bg-opacity-10 rounded-pill"><i class="fas fa-medal text-dark opacity-50"></i> ทอง ${top3[1].gold || 0}</div></div>`;
-            if(top3[0]) podiumHTML += `<div class="podium-item podium-1 d-flex flex-column justify-content-between"><div><i class="fas fa-crown text-white text-4xl mb-3" style="filter: drop-shadow(0 0 15px rgba(255,255,255,1));"></i><br><div class="medal-badge bg-gold shadow-lg" style="transform: scale(1.3); border-color:#FFD700;">1</div><img src="${top3[0].logo}" class="w-24 h-24 mx-auto bg-white rounded-circle p-2 mb-3 shadow-lg object-cover"><div class="fw-black text-xl text-truncate px-1 text-white" style="text-shadow: 0 2px 4px rgba(0,0,0,0.3);">${top3[0].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-black mt-2 py-2 bg-black bg-opacity-25 rounded-pill shadow-inner text-lg"><i class="fas fa-medal text-warning"></i> ทอง ${top3[0].gold || 0}</div></div>`;
-            if(top3[2]) podiumHTML += `<div class="podium-item podium-3 d-flex flex-column justify-content-between"><div><div class="medal-badge bg-bronze shadow-lg">3</div><img src="${top3[2].logo}" class="w-16 h-16 mx-auto bg-white rounded-circle p-1 mb-2 shadow object-cover"><div class="fw-bolder text-sm text-truncate px-1">${top3[2].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-black mt-2 py-2 bg-white bg-opacity-25 rounded-pill"><i class="fas fa-medal opacity-50 text-dark"></i> ทอง ${top3[2].gold || 0}</div></div>`;
+            // 🌟 แก้ไขแท่นรางวัล ไม่ให้กรอบทับกัน และแสดง ทอง เงิน ทองแดง ให้ครบถ้วน 🌟
+            if(top3[1]) podiumHTML += `<div class="podium-item podium-2 d-flex flex-column align-items-center"><div><div class="medal-badge bg-silver shadow-lg">2</div><img src="${top3[1].logo}" class="w-16 h-16 mx-auto bg-white rounded-circle p-1 mb-2 shadow object-cover"><div class="fw-bolder text-sm text-truncate px-1">${top3[1].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-bold mt-auto py-2 px-2 w-100 bg-dark text-white bg-opacity-10 rounded-pill small">🥇${top3[1].gold||0} 🥈${top3[1].silver||0} 🥉${top3[1].bronze||0}</div></div>`;
+            if(top3[0]) podiumHTML += `<div class="podium-item podium-1 d-flex flex-column align-items-center"><div><i class="fas fa-crown text-white text-4xl mb-3" style="filter: drop-shadow(0 0 15px rgba(255,255,255,1));"></i><br><div class="medal-badge bg-gold shadow-lg" style="transform: scale(1.3); border-color:#FFD700;">1</div><img src="${top3[0].logo}" class="w-24 h-24 mx-auto bg-white rounded-circle p-2 mb-3 shadow-lg object-cover"><div class="fw-black text-xl text-truncate px-1 text-white" style="text-shadow: 0 2px 4px rgba(0,0,0,0.3);">${top3[0].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-bold mt-auto py-2 px-2 w-100 bg-black bg-opacity-25 rounded-pill shadow-inner text-sm">🥇${top3[0].gold||0} 🥈${top3[0].silver||0} 🥉${top3[0].bronze||0}</div></div>`;
+            if(top3[2]) podiumHTML += `<div class="podium-item podium-3 d-flex flex-column align-items-center"><div><div class="medal-badge bg-bronze shadow-lg">3</div><img src="${top3[2].logo}" class="w-16 h-16 mx-auto bg-white rounded-circle p-1 mb-2 shadow object-cover"><div class="fw-bolder text-sm text-truncate px-1">${top3[2].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-bold mt-auto py-2 px-2 w-100 bg-white bg-opacity-25 rounded-pill small text-dark">🥇${top3[2].gold||0} 🥈${top3[2].silver||0} 🥉${top3[2].bronze||0}</div></div>`;
+            
             document.getElementById('podium-container').innerHTML = podiumHTML;
             
             renderDashboardLeaderboard(db.schools);
@@ -834,10 +844,28 @@
             const nav = document.getElementById('navbarNav'); if (nav.classList.contains('show')) document.querySelector('.navbar-toggler').click();
             Swal.fire({ title: '<span class="fw-bold">เข้าสู่ระบบจัดการ</span>', html: '<p class="text-muted">กรุณากรอกรหัส PIN (1234)</p>', input: 'password', showCancelButton: true, confirmButtonText: 'เข้าสู่ระบบ', cancelButtonText: 'ยกเลิก', confirmButtonColor: '#0A2463', borderRadius: '1rem', preConfirm: (pin) => { return pin === '1234' ? true : Swal.showValidationMessage('PIN ไม่ถูกต้อง!'); }
             }).then((res) => { 
-                if (res.isConfirmed) { isAdminLoggedIn = true; fireConfetti(); document.getElementById('main-nav-links').classList.remove('d-none'); document.getElementById('btnLogin').classList.add('d-none'); document.getElementById('btnLogoutTop').classList.remove('d-none'); Swal.fire({icon: 'success', title: 'สำเร็จ', timer: 1000, showConfirmButton: false}).then(() => { switchView('admin-dashboard'); updateAdminStats(); }); } 
+                if (res.isConfirmed) { 
+                    isAdminLoggedIn = true; 
+                    fireConfetti(); 
+                    // 🌟 แสดง/ซ่อนเฉพาะปุ่ม เจ้าหน้าที่ และ ออกจากระบบ 🌟
+                    document.getElementById('btnLogin').classList.add('d-none'); 
+                    document.getElementById('btnLogoutTop').classList.remove('d-none'); 
+                    
+                    Swal.fire({icon: 'success', title: 'สำเร็จ', timer: 1000, showConfirmButton: false}).then(() => { switchView('admin-dashboard'); updateAdminStats(); }); 
+                } 
             });
         }
-        function logoutAdmin() { Swal.fire({ title: 'ออกจากระบบ?', icon: 'question', showCancelButton: true, confirmButtonText: 'ใช่', confirmButtonColor: '#D8315B' }).then((res) => { if(res.isConfirmed) { isAdminLoggedIn = false; document.getElementById('main-nav-links').classList.add('d-none'); document.getElementById('btnLogin').classList.remove('d-none'); document.getElementById('btnLogoutTop').classList.add('d-none'); switchView('public-dashboard'); } }); }
+        function logoutAdmin() { 
+            Swal.fire({ title: 'ออกจากระบบ?', icon: 'question', showCancelButton: true, confirmButtonText: 'ใช่', confirmButtonColor: '#D8315B' }).then((res) => { 
+                if(res.isConfirmed) { 
+                    isAdminLoggedIn = false; 
+                    // 🌟 แสดง/ซ่อนเฉพาะปุ่ม เจ้าหน้าที่ และ ออกจากระบบ 🌟
+                    document.getElementById('btnLogin').classList.remove('d-none'); 
+                    document.getElementById('btnLogoutTop').classList.add('d-none'); 
+                    switchView('public-dashboard'); 
+                } 
+            }); 
+        }
         
         function showAdminTab(tabId) { document.querySelectorAll('.admin-tab').forEach(el => el.style.display = 'none'); const tab = document.getElementById(tabId); tab.style.display = 'block'; tab.classList.add('animate-up'); document.querySelectorAll('#admin-dashboard .list-group-item').forEach(btn => btn.classList.remove('active', 'shadow-sm')); event.currentTarget.classList.add('active', 'shadow-sm'); }
         
