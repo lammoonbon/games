@@ -249,8 +249,8 @@
                         "รู้แพ้ รู้ชนะ รู้อภัย มุ่งสู่อนาคตที่สดใสด้วยกีฬา"
                     </p>
                     <div class="mt-5 animate-up delay-300 d-flex justify-content-center gap-3 flex-wrap">
-                        <span class="badge bg-white text-dark px-4 py-3 text-lg rounded-pill shadow-lg fw-bold"><i class="far fa-calendar-alt text-primary me-2"></i> 17-21 ต.ค. 2569</span>
-                        <span class="badge bg-dark text-white px-4 py-3 text-lg rounded-pill shadow-lg fw-bold border border-white border-opacity-25"><i class="fas fa-map-marker-alt text-danger me-2"></i> ณ สนามกีฬาโรงเรียนชุมชนจระเข้หิน</span>
+                        <span class="badge bg-white text-dark px-4 py-3 text-lg rounded-pill shadow-lg fw-bold"><i class="far fa-calendar-alt text-primary me-2"></i> 17-21 ส.ค. 2569</span>
+                        <span class="badge bg-dark text-white px-4 py-3 text-lg rounded-pill shadow-lg fw-bold border border-white border-opacity-25"><i class="fas fa-map-marker-alt text-danger me-2"></i> สนามกีฬาโรงเรียนชุมชนจระเข้หิน</span>
                     </div>
                 </div>
             </div>
@@ -308,10 +308,12 @@
                             
                             <div class="flex-grow-1 d-flex flex-column justify-content-center">
                                 <div class="text-center mb-4 pt-2">
-                                    <div class="mx-auto position-relative" style="width: 160px; height: 160px;">
-                                        <svg class="progress-ring" width="160" height="160">
-                                            <circle class="progress-ring__circle-bg" stroke-width="12" fill="transparent" r="70" cx="80" cy="80"/>
-                                            <circle class="progress-ring__circle" stroke="url(#gradientProgress)" stroke-width="12" fill="transparent" r="70" cx="80" cy="80" stroke-linecap="round"/>
+                                    <!-- 🌟 ขยายขนาดจาก 160px เป็น 220px -->
+                                    <div class="mx-auto position-relative" style="width: 220px; height: 220px;">
+                                        <svg class="progress-ring" width="220" height="220">
+                                            <!-- ปรับขนาดรัศมี (r), จุดกึ่งกลาง (cx, cy) และความหนาเส้น (stroke-width) -->
+                                            <circle class="progress-ring__circle-bg" stroke-width="16" fill="transparent" r="95" cx="110" cy="110"/>
+                                            <circle class="progress-ring__circle" stroke="url(#gradientProgress)" stroke-width="16" fill="transparent" r="95" cx="110" cy="110" stroke-linecap="round"/>
                                             <defs>
                                                 <linearGradient id="gradientProgress" x1="0%" y1="0%" x2="100%" y2="0%">
                                                     <stop offset="0%" stop-color="#00c6ff" />
@@ -320,8 +322,9 @@
                                             </defs>
                                         </svg>
                                         <div class="progress-text-container position-absolute top-50 start-50 translate-middle w-100">
-                                            <h2 class="fw-black mb-0 text-gradient-primary" style="font-size: 2.5rem; line-height: 1;" id="progressPercent">0%</h2>
-                                            <span class="text-muted fw-bold small mt-1">สำเร็จแล้ว</span>
+                                            <!-- 🌟 ขยายขนาดตัวอักษรเปอร์เซ็นต์ให้ใหญ่ขึ้น -->
+                                            <h2 class="fw-black mb-0 text-gradient-primary" style="font-size: 3.5rem; line-height: 1;" id="progressPercent">0%</h2>
+                                            <span class="text-muted fw-bold mt-1" style="font-size: 1rem;">สำเร็จแล้ว</span>
                                         </div>
                                     </div>
                                 </div>
