@@ -35,15 +35,13 @@
     <!-- HTML2PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
+    <!-- 🌟 เพิ่ม Supabase JS Client 🌟 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         :root {
-            /* ชุดสีหลัก ที่สามารถถูกเปลี่ยนได้จากหน้าตั้งค่า */
             --primary-blue: #0A2463;
             --primary-red: #D8315B;
-            
-            --gold-start: #FFD700; --gold-end: #F9A826;
-            --silver-start: #E0EAFC; --silver-end: #CFDEF3;
-            --bronze-start: #e65c00; --bronze-end: #F9D423;
             --bg-light: #f4f7f6;
             --bg-dark: #0f172a;
             --text-light: #1e293b;
@@ -53,52 +51,33 @@
         body { font-family: 'Kanit', sans-serif; background-color: var(--bg-light); color: var(--text-light); transition: background-color 0.4s ease, color 0.4s ease; overflow-x: hidden; }
         body.dark-mode { background-color: var(--bg-dark); color: var(--text-dark); }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         body.dark-mode ::-webkit-scrollbar-thumb { background: #475569; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* Navbar Glassmorphism & บังคับแก้ไขปัญหาเมนูมือถือ (Tailwind vs Bootstrap) */
         .navbar-custom { background: rgba(10, 36, 99, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
-        .collapse.show, .collapsing { display: block !important; visibility: visible !important; }
-        .collapse:not(.show) { display: none !important; }
-        .navbar-toggler { padding: 0.5rem; outline: none !important; box-shadow: none !important; }
-        /* 🌟 ฝัง SVG ไอคอน 3 ขีด ป้องกันการถูก Tailwind เคลียร์ทิ้ง 🌟 */
-        .navbar-toggler-icon { background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2.2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important; }
+        .collapse.show, .collapsing { visibility: visible !important; }
 
-        /* 🌟 Super Vibrant Hero Banner */
         @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes float { 0% { transform: translateY(0px) scale(1); opacity: 0.3; } 50% { transform: translateY(-20px) scale(1.1); opacity: 0.6; } 100% { transform: translateY(0px) scale(1); opacity: 0.3; } }
         
-        .hero-banner { 
-            background: linear-gradient(-45deg, var(--primary-red), #FF4B2B, #3A1C71, var(--primary-blue), #FFAF7B);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-            color: white; 
-            padding: 5rem 0 6rem 0; 
-            border-radius: 0 0 3rem 3rem; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2); 
-            position: relative; 
-            overflow: hidden; 
-            transition: background 0.5s ease;
-        }
+        .hero-banner { background: linear-gradient(-45deg, var(--primary-red), #FF4B2B, #3A1C71, var(--primary-blue), #FFAF7B); background-size: 400% 400%; animation: gradientShift 15s ease infinite; color: white; padding: 5rem 0 6rem 0; border-radius: 0 0 3rem 3rem; box-shadow: 0 20px 50px rgba(0,0,0,0.2); position: relative; overflow: hidden; transition: background 0.5s ease; }
         .hero-orb-1 { position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%); top: -50px; left: -50px; border-radius: 50%; animation: float 6s ease-in-out infinite; pointer-events: none; }
         .hero-orb-2 { position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, rgba(255,215,0,0.15) 0%, transparent 70%); bottom: -100px; right: -50px; border-radius: 50%; animation: float 8s ease-in-out infinite reverse; pointer-events: none; }
 
-        /* 🌟 Dashboard Stat Cards */
         .stat-card-vibrant { border-radius: 1.5rem; padding: 1.75rem; color: white; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.1); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: none; }
         .stat-card-vibrant:hover { transform: translateY(-10px); filter: brightness(1.1); }
         .stat-card-vibrant .bg-icon { position: absolute; right: -15px; bottom: -20px; font-size: 8rem; opacity: 0.15; transform: rotate(-15deg); transition: all 0.4s; }
         .stat-card-vibrant:hover .bg-icon { transform: rotate(0deg) scale(1.1); opacity: 0.25; }
+        
         .grad-blue { background: linear-gradient(135deg, var(--primary-blue) 0%, #00c6ff 100%); box-shadow: 0 15px 30px rgba(0, 114, 255, 0.3); }
         .grad-gold { background: linear-gradient(135deg, #FDC830 0%, #F37335 100%); box-shadow: 0 15px 30px rgba(243, 115, 53, 0.3); }
         .grad-silver { background: linear-gradient(135deg, #8e9eab 0%, #2c3e50 100%); box-shadow: 0 15px 30px rgba(44, 62, 80, 0.3); }
         .grad-bronze { background: linear-gradient(135deg, #c79081 0%, #dfa579 100%); box-shadow: 0 15px 30px rgba(223, 165, 121, 0.3); color: #333; }
         .grad-bronze .bg-icon { opacity: 0.1; }
 
-        /* 🌟 Podium Styling */
         .podium-container { display: flex; align-items: flex-end; justify-content: center; gap: 0.75rem; margin-top: 3rem; min-height: 340px; }
         .podium-item { border-radius: 1.5rem 1.5rem 0 0; padding: 2rem 1rem 1rem 1rem; text-align: center; color: white; position: relative; transition: all 0.4s ease; cursor: default; }
         .podium-item:hover { filter: brightness(1.15); transform: scale(1.03); z-index: 10; }
@@ -110,11 +89,11 @@
         .bg-silver { background: linear-gradient(45deg, #ece9e6, #ffffff); color: #333;}
         .bg-bronze { background: linear-gradient(45deg, #e65c00, #F9D423); color: white;} 
 
-        /* Animations */
         .view-section { display: none; }
         .view-section.active { display: block; animation: fadeIn 0.4s ease-out forwards; }
         .animate-up { opacity: 0; transform: translateY(30px); animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .delay-100 { animation-delay: 100ms; } .delay-200 { animation-delay: 200ms; } .delay-300 { animation-delay: 300ms; }
+        
         @keyframes pulse-red { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 82, 82, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 82, 82, 0); } }
         .pulse-live { border-radius: 50%; background: #ff5252; width: 12px; height: 12px; display: inline-block; animation: pulse-red 2s infinite; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -149,7 +128,6 @@
         .a4-preview h2, .a4-preview h4, .a4-preview p { color: #000; }
         @media print { body * { visibility: hidden; } #pdf-content-wrapper, #pdf-content-wrapper * { visibility: visible; } #pdf-content-wrapper { position: absolute; left: 0; top: 0; width: 100%; } .pdf-scroll-wrapper { padding: 0; background: transparent; box-shadow: none; } }
 
-        /* 🌟 Leaderboard Styles */
         .leaderboard-row { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); border-radius: 1rem; background-color: transparent; }
         .leaderboard-row:hover { transform: scale(1.02) translateX(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); background-color: #ffffff; z-index: 2; position: relative; }
         body.dark-mode .leaderboard-row:hover { background-color: #334155; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
@@ -186,7 +164,6 @@
             .medal-val-mobile { font-size: 1rem !important; }
         }
 
-        /* 🌟 สไตล์สำหรับวงแหวน Progress 🌟 */
         .progress-ring { transform: rotate(-90deg); transform-origin: 50% 50%; }
         .progress-ring__circle-bg { stroke: #e2e8f0; transition: stroke 0.3s ease; }
         body.dark-mode .progress-ring__circle-bg { stroke: #334155; }
@@ -196,53 +173,47 @@
 </head>
 <body>
 
-    <!-- 🌟 แก้ไข Navbar ให้ปุ่ม Login และโหมดกลางคืน อยู่ด้านนอกเสมอ เพื่อให้เห็นในมือถือ 🌟 -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
         <div class="container">
-            <a class="navbar-brand font-bold text-2xl d-flex align-items-center me-auto" href="#" onclick="switchView('public-dashboard')">
+            <a class="navbar-brand font-bold text-2xl d-flex align-items-center" href="#" onclick="switchView('public-dashboard')">
                 <div class="bg-gradient-to-tr from-yellow-400 to-orange-500 p-1 rounded-circle me-2 d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 38px; height: 38px;">
                     <i class="fas fa-trophy text-white" style="font-size: 1.2rem;"></i>
                 </div>
-                <span class="navbar-title-text d-none d-sm-inline">SPORTS<span class="text-warning fw-light">CONNECT</span></span>
+                <span class="navbar-title-text">SPORTS<span class="text-warning fw-light">CONNECT</span></span>
             </a>
             
-            <!-- ปุ่มด้านขวาที่แสดงผลตลอดเวลา -->
-            <div class="d-flex align-items-center gap-2 ms-auto order-lg-last">
-                <button class="btn btn-sm btn-outline-light rounded-pill px-2 px-sm-3" onclick="toggleDarkMode()" title="โหมดกลางคืน">
-                    <i class="fas fa-moon" id="darkModeIcon"></i> <span class="d-none d-md-inline ms-1">กลางคืน</span>
-                </button>
-                <button id="btnLogin" class="btn btn-sm bg-gradient-to-r from-yellow-400 to-orange-500 text-dark border-0 rounded-pill px-3 fw-bold shadow" onclick="showAdminLogin()">
-                    <i class="fas fa-lock d-inline d-sm-none"></i> <span class="d-none d-sm-inline"><i class="fas fa-lock me-1"></i> เจ้าหน้าที่</span>
-                </button>
-                <button id="btnLogoutTop" class="btn btn-sm btn-danger border-0 rounded-pill px-3 fw-bold shadow d-none" onclick="logoutAdmin()">
-                    <i class="fas fa-sign-out-alt d-inline d-sm-none"></i> <span class="d-none d-sm-inline"><i class="fas fa-sign-out-alt me-1"></i> ออกจากระบบ</span>
-                </button>
-                
-                <!-- ปุ่ม Navbar Toggler -->
-                <button class="navbar-toggler border-0 ms-1 px-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
             
-            <!-- เมนูนำทาง (ไม่ซ่อนแล้ว เปิดให้คนทั่วไปเห็นเสมอ) -->
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto ps-lg-4" id="main-nav-links">
+                <ul class="navbar-nav me-auto ps-lg-4 d-none" id="main-nav-links">
                     <li class="nav-item"><a class="nav-link fw-medium text-uppercase px-3" href="#" onclick="switchView('public-dashboard')">หน้าแรก</a></li>
                     <li class="nav-item"><a class="nav-link fw-medium text-uppercase px-3" href="#" onclick="switchView('public-medals')">ตารางเหรียญ</a></li>
                     <li class="nav-item"><a class="nav-link fw-medium text-uppercase px-3" href="#" onclick="switchView('public-results')">ผลการแข่งขัน</a></li>
                 </ul>
+                
+                <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0 pb-3 pb-lg-0 ms-auto">
+                    <button class="btn btn-sm btn-outline-light rounded-pill px-3" onclick="toggleDarkMode()">
+                        <i class="fas fa-moon" id="darkModeIcon"></i> โหมดกลางคืน
+                    </button>
+                    <button id="btnLogin" class="btn btn-sm bg-gradient-to-r from-yellow-400 to-orange-500 text-dark border-0 rounded-pill px-4 fw-bold shadow" onclick="showAdminLogin()">
+                        <i class="fas fa-lock me-1"></i> เจ้าหน้าที่
+                    </button>
+                    <button id="btnLogoutTop" class="btn btn-sm btn-danger border-0 rounded-pill px-4 fw-bold shadow d-none" onclick="logoutAdmin()">
+                        <i class="fas fa-sign-out-alt me-1"></i> ออกจากระบบ
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
 
     <main class="container-fluid px-0">
         
-        <!-- ================= PUBLIC DASHBOARD ================= -->
         <div id="public-dashboard" class="view-section active">
             <div class="hero-banner text-center px-3" id="mainHeroBanner">
                 <div class="hero-orb-1"></div>
                 <div class="hero-orb-2"></div>
-                
                 <div class="position-relative z-10">
                     <div class="d-inline-block bg-white bg-opacity-25 rounded-pill px-4 py-2 mb-4 animate-up border border-white border-opacity-50 shadow-sm backdrop-blur-sm">
                         <span class="pulse-live me-2"></span><span class="fw-bold tracking-widest text-sm">LIVE UPDATES</span>
@@ -271,7 +242,6 @@
                 </div>
 
                 <div class="row mb-5 pb-5 animate-up delay-400">
-                    <!-- Leaderboard Table -->
                     <div class="col-lg-8">
                         <div class="chart-card h-100 p-0 overflow-hidden d-flex flex-column">
                             <div class="d-flex justify-content-between align-items-center p-3 p-md-4 pb-3 border-bottom">
@@ -306,7 +276,6 @@
                         </div>
                     </div>
                     
-                    <!-- Progress ความคืบหน้าการแข่งขัน -->
                     <div class="col-lg-4 mt-4 mt-lg-0">
                         <div class="chart-card h-100 d-flex flex-column">
                             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -315,7 +284,6 @@
                             </div>
                             
                             <div class="flex-grow-1 d-flex flex-column justify-content-center">
-                                <!-- วงแหวน Progress (SVG) -->
                                 <div class="text-center mb-4 pt-2">
                                     <div class="mx-auto position-relative" style="width: 160px; height: 160px;">
                                         <svg class="progress-ring" width="160" height="160">
@@ -335,7 +303,6 @@
                                     </div>
                                 </div>
 
-                                <!-- กล่องสถิติ (Stats Badges) -->
                                 <div class="row g-2 text-center mt-auto">
                                     <div class="col-4">
                                         <div class="p-2 rounded-3 bg-success bg-opacity-10 border border-success border-opacity-25 h-100 shadow-sm d-flex flex-column justify-content-center">
@@ -363,7 +330,6 @@
             </div>
         </div>
 
-        <!-- ================= PUBLIC MEDALS TABLE ================= -->
         <div id="public-medals" class="view-section container mt-5 min-h-screen">
             <div class="text-center mb-5 animate-up">
                 <h1 class="fw-black text-gradient-primary text-5xl mb-2">ตารางสรุปเหรียญรางวัลรวม</h1>
@@ -389,7 +355,6 @@
             </div>
         </div>
 
-        <!-- ================= PUBLIC RESULTS ================= -->
         <div id="public-results" class="view-section container mt-5 min-h-screen">
             <div class="text-center mb-5 animate-up">
                 <h1 class="fw-black text-gradient-gold text-5xl mb-2">ผลการแข่งขันล่าสุด</h1>
@@ -413,7 +378,6 @@
         <!-- ================= ADMIN DASHBOARD ================= -->
         <div id="admin-dashboard" class="view-section container-fluid bg-light min-h-screen pt-4 dark:bg-gray-900">
             <div class="row px-2 px-md-4">
-                <!-- Sidebar -->
                 <div class="col-md-3 col-lg-2 mb-4 animate-up">
                     <div class="bg-white rounded-4 shadow-sm p-3 sticky-top dark:bg-gray-800" style="top: 100px;">
                         <div class="text-center mb-4 pt-3">
@@ -434,7 +398,6 @@
                     </div>
                 </div>
 
-                <!-- Admin Content -->
                 <div class="col-md-9 col-lg-10 animate-up delay-100">
                     <div id="admin-home" class="admin-tab active">
                         <h3 class="fw-bolder mb-4 text-gradient-primary">Admin Dashboard</h3>
@@ -486,7 +449,6 @@
                         </div>
                     </div>
 
-                    <!-- PDF Report -->
                     <div id="admin-report" class="admin-tab" style="display: none;">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h3 class="fw-bolder text-primary"><i class="fas fa-file-pdf me-2"></i> รายงานผลการแข่งขัน</h3>
@@ -510,11 +472,22 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- JAVASCRIPT LOGIC -->
     <script>
-        const db = {
+        // ==========================================
+        // 🌟 ตั้งค่า SUPABASE ตรงนี้ 🌟
+        // ==========================================
+        const SUPABASE_URL = 'https://estrxnxxgylddcvouhjh.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzdHJ4bnh4Z3lsZGRjdm91aGpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NTk1MzgsImV4cCI6MjA5OTQzNTUzOH0.71re9dZBYPcjap7-S9dBo422I0hBI7xzF1hGvM_LqgE';
+        
+        let supabaseClient = null;
+        if (SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE') {
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+
+        // ==========================================
+        // ฐานข้อมูล (จะถูกแทนที่ด้วยข้อมูลจาก Supabase)
+        // ==========================================
+        let db = {
             sportsList: ["ฟุตบอล", "วอลเลย์บอล", "กรีฑา", "เซปักตะกร้อ", "เปตอง"],
             ageGroups: ["รุ่นอนุบาล", "อายุไม่เกิน 10 ปี ชาย", "อายุไม่เกิน 10 ปี หญิง", "อายุไม่เกิน 12 ปี ชาย", "อายุไม่เกิน 12 ปี หญิง", "อายุไม่เกิน 15 ปี ชาย", "อายุไม่เกิน 15 ปี หญิง"],
             schools: [
@@ -527,19 +500,74 @@
             results: [
                 { id: 1, sport: "ฟุตบอล", type: "อายุไม่เกิน 12 ปี ชาย", date: "2026-10-10", gold_school: "โรงเรียนวิทยาศาสตร์", silver_school: "โรงเรียนอนุบาลประจำจังหวัด", bronze_school: "โรงเรียนบ้านหนองบัว" },
                 { id: 2, sport: "วอลเลย์บอล", type: "อายุไม่เกิน 15 ปี หญิง", date: "2026-10-11", gold_school: "โรงเรียนอนุบาลประจำจังหวัด", silver_school: "โรงเรียนเทศบาล 1", bronze_school: "โรงเรียนวัดใหญ่" },
-                { id: 3, sport: "กรีฑา", type: "อายุไม่เกิน 10 ปี ชาย", date: "2026-10-12", gold_school: "โรงเรียนบ้านหนองบัว", silver_school: "โรงเรียนวิทยาศาสตร์", bronze_school: "โรงเรียนเทศบาล 1" },
-                { id: 4, sport: "ฟุตบอล", type: "อายุไม่เกิน 15 ปี ชาย", date: "2026-10-13", gold_school: "โรงเรียนบ้านหนองบัว", silver_school: "โรงเรียนเทศบาล 1", bronze_school: "โรงเรียนวัดใหญ่" }
+                { id: 3, sport: "กรีฑา", type: "อายุไม่เกิน 10 ปี ชาย", date: "2026-10-12", gold_school: "โรงเรียนบ้านหนองบัว", silver_school: "โรงเรียนวิทยาศาสตร์", bronze_school: "โรงเรียนเทศบาล 1" }
             ]
         };
 
         let myPieChart = null; let isAdminLoggedIn = false;
 
         document.addEventListener("DOMContentLoaded", () => {
-            sortSchoolsByMedals(); renderPublicDashboard(); renderMedalsTable();
-            populateSportsSelects(); populateAgeGroupSelects(); renderResults(); populateSchoolSelects();
-            renderAdminSchools(); document.getElementById('inputDate').valueAsDate = new Date();
+            document.getElementById('inputDate').valueAsDate = new Date();
             document.getElementById('currentYear').innerText = new Date().getFullYear() + 543;
+            loadDataFromSupabase(); // โหลดข้อมูลเมื่อเปิดหน้าเว็บ
         });
+
+        /* --- 🌟 ฟังก์ชันโหลดข้อมูลจาก SUPABASE 🌟 --- */
+        async function loadDataFromSupabase() {
+            if (!supabaseClient) {
+                console.log("ยังไม่ได้ตั้งค่า Supabase URL (ใช้งานโหมด Mock Data)");
+                processDataAndRender();
+                return;
+            }
+
+            try {
+                // แสดง Loading
+                Swal.fire({ title: 'กำลังโหลดข้อมูลจากฐานข้อมูล...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                
+                // ดึงข้อมูลทั้ง 4 ตารางพร้อมกัน
+                const [resSports, resAges, resSchools, resResults] = await Promise.all([
+                    supabaseClient.from('sports').select('name'),
+                    supabaseClient.from('age_groups').select('name'),
+                    supabaseClient.from('schools').select('*'),
+                    supabaseClient.from('results').select('*')
+                ]);
+
+                // อัปเดตตัวแปร db (ถ้ามีข้อมูลให้ใช้ข้อมูลใหม่ ถ้าไม่มีให้เป็น Array ว่าง)
+                if (resSports.data) db.sportsList = resSports.data.map(s => s.name);
+                if (resAges.data) db.ageGroups = resAges.data.map(a => a.name);
+                if (resSchools.data) db.schools = resSchools.data;
+                if (resResults.data) db.results = resResults.data;
+
+                processDataAndRender();
+                Swal.close();
+            } catch (err) {
+                console.error("Error loading data", err);
+                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้', 'error');
+            }
+        }
+
+        // ประมวลผลและ Render UI ทั้งหมด
+        function processDataAndRender() {
+            // 1. ล้างคะแนนเหรียญเก่าทั้งหมด
+            db.schools.forEach(s => { s.gold = 0; s.silver = 0; s.bronze = 0; s.total = 0; });
+            
+            // 2. คำนวณเหรียญใหม่จากตาราง results แบบไดนามิก
+            db.results.forEach(r => {
+                let g = db.schools.find(s => s.name === r.gold_school); if(g) { g.gold++; g.total++; }
+                let s = db.schools.find(s => s.name === r.silver_school); if(s) { s.silver++; s.total++; }
+                let b = db.schools.find(s => s.name === r.bronze_school); if(b) { b.bronze++; b.total++; }
+            });
+
+            sortSchoolsByMedals();
+            renderPublicDashboard();
+            renderMedalsTable();
+            populateSportsSelects();
+            populateAgeGroupSelects();
+            renderResults();
+            populateSchoolSelects();
+            renderAdminSchools();
+            updateAdminStats();
+        }
 
         function renderDashboardLeaderboard(topSchools) {
             let html = ""; const top5 = topSchools.slice(0, 5);
@@ -559,32 +587,26 @@
                             <div class="lb-school-name fw-bold dark:text-white" title="${school.name}">${school.name}</div>
                         </div>
                     </td>
-                    <td class="text-center py-2 px-1"><div class="lb-badge lb-gold shadow-sm">${school.gold}</div></td>
-                    <td class="text-center py-2 px-1"><div class="lb-badge lb-silver shadow-sm">${school.silver}</div></td>
-                    <td class="text-center py-2 px-1"><div class="lb-badge lb-bronze shadow-sm">${school.bronze}</div></td>
-                    <td class="text-center py-2 px-1"><div class="lb-badge lb-total shadow"><i class="fas fa-fire me-1 text-white opacity-75 d-none d-sm-inline" style="font-size:0.9rem"></i> ${school.total}</div></td>
+                    <td class="text-center py-2 px-1"><div class="lb-badge lb-gold shadow-sm">${school.gold || 0}</div></td>
+                    <td class="text-center py-2 px-1"><div class="lb-badge lb-silver shadow-sm">${school.silver || 0}</div></td>
+                    <td class="text-center py-2 px-1"><div class="lb-badge lb-bronze shadow-sm">${school.bronze || 0}</div></td>
+                    <td class="text-center py-2 px-1"><div class="lb-badge lb-total shadow"><i class="fas fa-fire me-1 text-white opacity-75 d-none d-sm-inline" style="font-size:0.9rem"></i> ${school.total || 0}</div></td>
                 </tr>`;
             });
             document.getElementById('dashboard-leaderboard-body').innerHTML = html;
         }
 
-        /* --- 🌟 1. ฟังก์ชันคำนวณและสร้างวงแหวน Progress --- */
         function updateProgressUI() {
-            // สมมติว่าตั้งเป้าหมายรายการแข่งขันทั้งหมดไว้ที่ 30 รายการ
             const totalMatches = 30; 
             const completedMatches = db.results.length;
             const remainingMatches = Math.max(0, totalMatches - completedMatches);
-            
-            // คำนวณเปอร์เซ็นต์
             let percent = Math.round((completedMatches / totalMatches) * 100);
             if (percent > 100) percent = 100;
 
-            // อัปเดตตัวเลขในกล่อง (มี Animation)
             animateValue("statCompleted", 0, completedMatches, 1000);
             animateValue("statRemaining", 0, remainingMatches, 1000);
             document.getElementById("statTotal").innerText = totalMatches;
             
-            // แอนิเมชันตัวเลข % ตรงกลางวงแหวน
             const percentEl = document.getElementById("progressPercent");
             let startTimestamp = null;
             const step = (timestamp) => {
@@ -594,20 +616,13 @@
                 if (prog < 1) { window.requestAnimationFrame(step); }
             }; window.requestAnimationFrame(step);
 
-            // แอนิเมชันเส้นขอบวงแหวน
             const circle = document.querySelector('.progress-ring__circle');
             if (circle) {
                 const radius = circle.r.baseVal.value;
                 const circumference = radius * 2 * Math.PI;
                 circle.style.strokeDasharray = `${circumference} ${circumference}`;
-                
-                // คำนวณระยะที่เส้นจะวิ่งไป (offset)
                 const offset = circumference - (percent / 100) * circumference;
-                
-                // ให้เวลา DOM โหลดแปปนึงค่อยยิงแอนิเมชัน
-                setTimeout(() => {
-                    circle.style.strokeDashoffset = offset;
-                }, 100);
+                setTimeout(() => { circle.style.strokeDashoffset = offset; }, 100);
             }
         }
 
@@ -652,26 +667,93 @@
             document.getElementById('adminSchoolTableBody').innerHTML = html;
         }
 
-        function addSchool(e) {
+        async function addSchool(e) {
             e.preventDefault(); const name = document.getElementById('newSchoolName').value.trim(); let logo = document.getElementById('newSchoolLogo').value.trim();
             if(db.schools.find(s => s.name === name)) return Swal.fire('ข้อผิดพลาด', 'มีชื่อโรงเรียนนี้ในระบบแล้ว', 'error');
             if (!logo) { const cleanName = name.replace("โรงเรียน", "").trim(); const initials = cleanName.substring(0, 2); logo = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=random&color=fff&size=128&font-size=0.4`; }
-            const newId = "S" + String(db.schools.length + 1).padStart(2, '0'); db.schools.push({ id: newId, name: name, gold: 0, silver: 0, bronze: 0, total: 0, logo: logo });
-            renderAdminSchools(); updateAdminStats(); populateSchoolSelects(); renderMedalsTable(); renderPublicDashboard(); document.getElementById('newSchoolName').value = ''; document.getElementById('newSchoolLogo').value = ''; Swal.fire({icon: 'success', title: 'เพิ่มสำเร็จ', timer: 1000, showConfirmButton: false});
+            
+            if(supabaseClient) {
+                Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                const { error } = await supabaseClient.from('schools').insert([{ name: name, logo: logo }]);
+                if(error) return Swal.fire('Error', error.message, 'error');
+                await loadDataFromSupabase();
+                Swal.fire({icon: 'success', title: 'เพิ่มสำเร็จ', timer: 1000, showConfirmButton: false});
+            } else {
+                const newId = "S" + String(db.schools.length + 1).padStart(2, '0'); db.schools.push({ id: newId, name: name, gold: 0, silver: 0, bronze: 0, total: 0, logo: logo });
+                processDataAndRender();
+                Swal.fire({icon: 'success', title: 'เพิ่มสำเร็จ', timer: 1000, showConfirmButton: false});
+            }
+            document.getElementById('newSchoolName').value = ''; document.getElementById('newSchoolLogo').value = '';
         }
 
-        function deleteSchool(id) { Swal.fire({ title: 'ยืนยันการลบ?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'ใช่' }).then((res) => { if (res.isConfirmed) { const index = db.schools.findIndex(s => s.id === id); if (index !== -1) { db.schools.splice(index, 1); renderAdminSchools(); updateAdminStats(); populateSchoolSelects(); renderMedalsTable(); renderPublicDashboard(); Swal.fire({icon: 'success', title: 'ลบสำเร็จ', timer: 1000, showConfirmButton: false}); } } }); }
+        async function deleteSchool(id) { 
+            Swal.fire({ title: 'ยืนยันการลบ?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'ใช่' }).then(async (res) => { 
+                if (res.isConfirmed) { 
+                    if(supabaseClient) {
+                        Swal.fire({ title: 'กำลังลบ...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                        const schoolToDelete = db.schools.find(s => s.id == id);
+                        if(schoolToDelete) {
+                            await supabaseClient.from('schools').delete().match({ id: schoolToDelete.id });
+                            await loadDataFromSupabase();
+                        }
+                    } else {
+                        const index = db.schools.findIndex(s => s.id === id); if (index !== -1) db.schools.splice(index, 1); processDataAndRender();
+                    }
+                    Swal.fire({icon: 'success', title: 'ลบสำเร็จ', timer: 1000, showConfirmButton: false}); 
+                } 
+            }); 
+        }
 
-        function populateSportsSelects() { let filterHtml = `<option value="all">🏆 กีฬาทั้งหมด</option>`, addHtml = ``, tableHtml = ``; db.sportsList.forEach((sport, index) => { filterHtml += `<option value="${sport}">${sport}</option>`; addHtml += `<option value="${sport}">${sport}</option>`; tableHtml += `<tr><td>${index + 1}</td><td class="fw-bold text-start">${sport}</td><td><button class="btn btn-sm btn-outline-danger" onclick="deleteSport(${index})">ลบ</button></td></tr>`; }); document.getElementById('filterSport').innerHTML = filterHtml; document.getElementById('inputSport').innerHTML = addHtml; document.getElementById('adminSportTableBody').innerHTML = tableHtml; if(document.getElementById('admin-count-sports')) document.getElementById('admin-count-sports').innerText = db.sportsList.length; }
-        function addSport(e) { e.preventDefault(); const newSport = document.getElementById('newSportName').value.trim(); if(newSport && !db.sportsList.includes(newSport)) { db.sportsList.push(newSport); populateSportsSelects(); document.getElementById('newSportName').value = ''; Swal.fire({icon: 'success', title: 'เพิ่มสำเร็จ', timer: 1000, showConfirmButton: false}); } }
-        function deleteSport(index) { db.sportsList.splice(index, 1); populateSportsSelects(); }
+        function populateSportsSelects() { let filterHtml = `<option value="all">🏆 กีฬาทั้งหมด</option>`, addHtml = ``, tableHtml = ``; db.sportsList.forEach((sport, index) => { filterHtml += `<option value="${sport}">${sport}</option>`; addHtml += `<option value="${sport}">${sport}</option>`; tableHtml += `<tr><td>${index + 1}</td><td class="fw-bold text-start">${sport}</td><td><button class="btn btn-sm btn-outline-danger" onclick="deleteSport('${sport}', ${index})">ลบ</button></td></tr>`; }); document.getElementById('filterSport').innerHTML = filterHtml; document.getElementById('inputSport').innerHTML = addHtml; document.getElementById('adminSportTableBody').innerHTML = tableHtml; if(document.getElementById('admin-count-sports')) document.getElementById('admin-count-sports').innerText = db.sportsList.length; }
         
-        function populateAgeGroupSelects() { let formHtml = `<option value="" disabled selected>-- เลือกรุ่นอายุ --</option>`, tableHtml = ``; db.ageGroups.forEach((age, index) => { formHtml += `<option value="${age}">${age}</option>`; tableHtml += `<tr><td>${index + 1}</td><td class="fw-bold text-start">${age}</td><td><button class="btn btn-sm btn-outline-danger" onclick="deleteAgeGroup(${index})">ลบ</button></td></tr>`; }); document.getElementById('inputType').innerHTML = formHtml; document.getElementById('adminAgeGroupTableBody').innerHTML = tableHtml; if(document.getElementById('admin-count-ages')) document.getElementById('admin-count-ages').innerText = db.ageGroups.length; }
-        function addAgeGroup(e) { e.preventDefault(); const newAge = document.getElementById('newAgeGroupName').value.trim(); if(newAge && !db.ageGroups.includes(newAge)) { db.ageGroups.push(newAge); populateAgeGroupSelects(); document.getElementById('newAgeGroupName').value = ''; Swal.fire({icon: 'success', title: 'เพิ่มสำเร็จ', timer: 1000, showConfirmButton: false}); } }
-        function deleteAgeGroup(index) { db.ageGroups.splice(index, 1); populateAgeGroupSelects(); }
+        async function addSport(e) { 
+            e.preventDefault(); const newSport = document.getElementById('newSportName').value.trim(); 
+            if(newSport && !db.sportsList.includes(newSport)) { 
+                if(supabaseClient) {
+                    await supabaseClient.from('sports').insert([{ name: newSport }]);
+                    await loadDataFromSupabase();
+                } else {
+                    db.sportsList.push(newSport); processDataAndRender(); 
+                }
+                document.getElementById('newSportName').value = ''; Swal.fire({icon: 'success', title: 'เพิ่มสำเร็จ', timer: 1000, showConfirmButton: false}); 
+            } 
+        }
+        
+        async function deleteSport(sportName, index) { 
+            if(supabaseClient) {
+                await supabaseClient.from('sports').delete().match({ name: sportName });
+                await loadDataFromSupabase();
+            } else {
+                db.sportsList.splice(index, 1); processDataAndRender(); 
+            }
+        }
+        
+        function populateAgeGroupSelects() { let formHtml = `<option value="" disabled selected>-- เลือกรุ่นอายุ --</option>`, tableHtml = ``; db.ageGroups.forEach((age, index) => { formHtml += `<option value="${age}">${age}</option>`; tableHtml += `<tr><td>${index + 1}</td><td class="fw-bold text-start">${age}</td><td><button class="btn btn-sm btn-outline-danger" onclick="deleteAgeGroup('${age}', ${index})">ลบ</button></td></tr>`; }); document.getElementById('inputType').innerHTML = formHtml; document.getElementById('adminAgeGroupTableBody').innerHTML = tableHtml; if(document.getElementById('admin-count-ages')) document.getElementById('admin-count-ages').innerText = db.ageGroups.length; }
+        
+        async function addAgeGroup(e) { 
+            e.preventDefault(); const newAge = document.getElementById('newAgeGroupName').value.trim(); 
+            if(newAge && !db.ageGroups.includes(newAge)) { 
+                if(supabaseClient) {
+                    await supabaseClient.from('age_groups').insert([{ name: newAge }]);
+                    await loadDataFromSupabase();
+                } else {
+                    db.ageGroups.push(newAge); processDataAndRender(); 
+                }
+                document.getElementById('newAgeGroupName').value = ''; Swal.fire({icon: 'success', title: 'เพิ่มสำเร็จ', timer: 1000, showConfirmButton: false}); 
+            } 
+        }
+        
+        async function deleteAgeGroup(ageName, index) { 
+            if(supabaseClient) {
+                await supabaseClient.from('age_groups').delete().match({ name: ageName });
+                await loadDataFromSupabase();
+            } else {
+                db.ageGroups.splice(index, 1); processDataAndRender(); 
+            }
+        }
 
         function sortSchoolsByMedals() { db.schools.sort((a, b) => { if (b.gold !== a.gold) return b.gold - a.gold; if (b.silver !== a.silver) return b.silver - a.silver; if (b.bronze !== a.bronze) return b.bronze - a.bronze; return b.total - a.total; }); }
-        function calculateTotals() { let tGold = 0, tSilver = 0, tBronze = 0; db.schools.forEach(s => { tGold += s.gold; tSilver += s.silver; tBronze += s.bronze; }); return { tGold, tSilver, tBronze, total: tGold + tSilver + tBronze }; }
+        function calculateTotals() { let tGold = 0, tSilver = 0, tBronze = 0; db.schools.forEach(s => { tGold += s.gold || 0; tSilver += s.silver || 0; tBronze += s.bronze || 0; }); return { tGold, tSilver, tBronze, total: tGold + tSilver + tBronze }; }
 
         function renderPublicDashboard() {
             const totals = calculateTotals();
@@ -686,10 +768,9 @@
             setTimeout(() => { animateValue("c-school", 0, db.schools.length, 1000); animateValue("c-gold", 0, totals.tGold, 1000); animateValue("c-silver", 0, totals.tSilver, 1000); animateValue("c-bronze", 0, totals.tBronze, 1000); }, 100);
 
             const top3 = db.schools.slice(0, 3); let podiumHTML = "";
-            // 🌟 อัปเดตคำอธิบายเหรียญให้ถูกต้อง 🌟
-            if(top3[1]) podiumHTML += `<div class="podium-item podium-2 d-flex flex-column justify-content-between"><div><div class="medal-badge bg-silver shadow-lg">2</div><img src="${top3[1].logo}" class="w-16 h-16 mx-auto bg-white rounded-circle p-1 mb-2 shadow object-cover"><div class="fw-bolder text-sm text-truncate px-1">${top3[1].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-black mt-2 py-2 bg-dark text-white bg-opacity-10 rounded-pill"><i class="fas fa-medal text-dark opacity-50"></i> เงิน ${top3[1].silver}</div></div>`;
-            if(top3[0]) podiumHTML += `<div class="podium-item podium-1 d-flex flex-column justify-content-between"><div><i class="fas fa-crown text-white text-4xl mb-3" style="filter: drop-shadow(0 0 15px rgba(255,255,255,1));"></i><br><div class="medal-badge bg-gold shadow-lg" style="transform: scale(1.3); border-color:#FFD700;">1</div><img src="${top3[0].logo}" class="w-24 h-24 mx-auto bg-white rounded-circle p-2 mb-3 shadow-lg object-cover"><div class="fw-black text-xl text-truncate px-1 text-white" style="text-shadow: 0 2px 4px rgba(0,0,0,0.3);">${top3[0].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-black mt-2 py-2 bg-black bg-opacity-25 rounded-pill shadow-inner text-lg"><i class="fas fa-medal text-warning"></i> ทอง ${top3[0].gold}</div></div>`;
-            if(top3[2]) podiumHTML += `<div class="podium-item podium-3 d-flex flex-column justify-content-between"><div><div class="medal-badge bg-bronze shadow-lg">3</div><img src="${top3[2].logo}" class="w-16 h-16 mx-auto bg-white rounded-circle p-1 mb-2 shadow object-cover"><div class="fw-bolder text-sm text-truncate px-1">${top3[2].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-black mt-2 py-2 bg-white bg-opacity-25 rounded-pill"><i class="fas fa-medal opacity-50 text-dark"></i> ทองแดง ${top3[2].bronze}</div></div>`;
+            if(top3[1]) podiumHTML += `<div class="podium-item podium-2 d-flex flex-column justify-content-between"><div><div class="medal-badge bg-silver shadow-lg">2</div><img src="${top3[1].logo}" class="w-16 h-16 mx-auto bg-white rounded-circle p-1 mb-2 shadow object-cover"><div class="fw-bolder text-sm text-truncate px-1">${top3[1].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-black mt-2 py-2 bg-dark text-white bg-opacity-10 rounded-pill"><i class="fas fa-medal text-dark opacity-50"></i> ทอง ${top3[1].gold || 0}</div></div>`;
+            if(top3[0]) podiumHTML += `<div class="podium-item podium-1 d-flex flex-column justify-content-between"><div><i class="fas fa-crown text-white text-4xl mb-3" style="filter: drop-shadow(0 0 15px rgba(255,255,255,1));"></i><br><div class="medal-badge bg-gold shadow-lg" style="transform: scale(1.3); border-color:#FFD700;">1</div><img src="${top3[0].logo}" class="w-24 h-24 mx-auto bg-white rounded-circle p-2 mb-3 shadow-lg object-cover"><div class="fw-black text-xl text-truncate px-1 text-white" style="text-shadow: 0 2px 4px rgba(0,0,0,0.3);">${top3[0].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-black mt-2 py-2 bg-black bg-opacity-25 rounded-pill shadow-inner text-lg"><i class="fas fa-medal text-warning"></i> ทอง ${top3[0].gold || 0}</div></div>`;
+            if(top3[2]) podiumHTML += `<div class="podium-item podium-3 d-flex flex-column justify-content-between"><div><div class="medal-badge bg-bronze shadow-lg">3</div><img src="${top3[2].logo}" class="w-16 h-16 mx-auto bg-white rounded-circle p-1 mb-2 shadow object-cover"><div class="fw-bolder text-sm text-truncate px-1">${top3[2].name.replace('โรงเรียน','ร.ร.')}</div></div><div class="fw-black mt-2 py-2 bg-white bg-opacity-25 rounded-pill"><i class="fas fa-medal opacity-50 text-dark"></i> ทอง ${top3[2].gold || 0}</div></div>`;
             document.getElementById('podium-container').innerHTML = podiumHTML;
             
             renderDashboardLeaderboard(db.schools);
@@ -712,10 +793,10 @@
                                 <div class="school-name-mobile">${school.name}</div>
                             </div>
                         </td>
-                        <td class="text-center fw-black text-warning fs-4 medal-val-mobile">${school.gold}</td>
-                        <td class="text-center fw-bold text-secondary fs-5 medal-val-mobile">${school.silver}</td>
-                        <td class="text-center fw-bold fs-5 medal-val-mobile" style="color: #CD7F32;">${school.bronze}</td>
-                        <td class="text-center fw-black fs-4 text-primary bg-primary bg-opacity-10 rounded-end-3 medal-val-mobile">${school.total}</td>
+                        <td class="text-center fw-black text-warning fs-4 medal-val-mobile">${school.gold || 0}</td>
+                        <td class="text-center fw-bold text-secondary fs-5 medal-val-mobile">${school.silver || 0}</td>
+                        <td class="text-center fw-bold fs-5 medal-val-mobile" style="color: #CD7F32;">${school.bronze || 0}</td>
+                        <td class="text-center fw-black fs-4 text-primary bg-primary bg-opacity-10 rounded-end-3 medal-val-mobile">${school.total || 0}</td>
                     </tr>
                 `;
             });
@@ -744,71 +825,45 @@
             document.querySelectorAll('.view-section').forEach(el => { el.classList.remove('active'); el.classList.remove('animate-up');});
             const view = document.getElementById(viewId); view.classList.add('active');
             view.querySelectorAll('.animate-up').forEach(el => { el.style.animation = 'none'; el.offsetHeight; el.style.animation = null; }); window.scrollTo({ top: 0, behavior: 'smooth' });
-            if(viewId === 'public-dashboard') renderPublicDashboard(); 
-            
-            // ปิดเมนูหลังจากคลิกเลือกหน้า
-            const nav = document.getElementById('navbarNav'); 
-            if (nav.classList.contains('show')) {
-                document.querySelector('.navbar-toggler').click(); 
-            }
+            if(viewId === 'public-dashboard') renderPublicDashboard(); const nav = document.getElementById('navbarNav'); if (nav.classList.contains('show')) document.querySelector('.navbar-toggler').click();
         }
 
         function toggleDarkMode() { document.body.classList.toggle('dark-mode'); const icon = document.getElementById('darkModeIcon'); if(document.body.classList.contains('dark-mode')) { icon.classList.replace('fa-moon', 'fa-sun'); } else { icon.classList.replace('fa-sun', 'fa-moon'); } }
 
         function showAdminLogin() {
-            const nav = document.getElementById('navbarNav'); 
-            if (nav.classList.contains('show')) {
-                document.querySelector('.navbar-toggler').click(); 
-            }
+            const nav = document.getElementById('navbarNav'); if (nav.classList.contains('show')) document.querySelector('.navbar-toggler').click();
             Swal.fire({ title: '<span class="fw-bold">เข้าสู่ระบบจัดการ</span>', html: '<p class="text-muted">กรุณากรอกรหัส PIN (1234)</p>', input: 'password', showCancelButton: true, confirmButtonText: 'เข้าสู่ระบบ', cancelButtonText: 'ยกเลิก', confirmButtonColor: '#0A2463', borderRadius: '1rem', preConfirm: (pin) => { return pin === '1234' ? true : Swal.showValidationMessage('PIN ไม่ถูกต้อง!'); }
             }).then((res) => { 
-                if (res.isConfirmed) { 
-                    isAdminLoggedIn = true; 
-                    fireConfetti(); 
-                    
-                    // สลับปุ่มเข้าสู่ระบบเป็นปุ่มออกจากระบบ
-                    document.getElementById('btnLogin').classList.add('d-none'); 
-                    document.getElementById('btnLogoutTop').classList.remove('d-none'); 
-                    
-                    Swal.fire({icon: 'success', title: 'สำเร็จ', timer: 1000, showConfirmButton: false}).then(() => { 
-                        switchView('admin-dashboard'); 
-                        updateAdminStats(); 
-                    }); 
-                } 
+                if (res.isConfirmed) { isAdminLoggedIn = true; fireConfetti(); document.getElementById('main-nav-links').classList.remove('d-none'); document.getElementById('btnLogin').classList.add('d-none'); document.getElementById('btnLogoutTop').classList.remove('d-none'); Swal.fire({icon: 'success', title: 'สำเร็จ', timer: 1000, showConfirmButton: false}).then(() => { switchView('admin-dashboard'); updateAdminStats(); }); } 
             });
         }
-        
-        function logoutAdmin() { 
-            Swal.fire({ title: 'ออกจากระบบ?', icon: 'question', showCancelButton: true, confirmButtonText: 'ใช่', confirmButtonColor: '#D8315B' }).then((res) => { 
-                if(res.isConfirmed) { 
-                    isAdminLoggedIn = false; 
-                    
-                    // สลับปุ่มออกจากระบบกลับเป็นปุ่มเข้าสู่ระบบ
-                    document.getElementById('btnLogin').classList.remove('d-none'); 
-                    document.getElementById('btnLogoutTop').classList.add('d-none'); 
-                    
-                    switchView('public-dashboard'); 
-                } 
-            }); 
-        }
+        function logoutAdmin() { Swal.fire({ title: 'ออกจากระบบ?', icon: 'question', showCancelButton: true, confirmButtonText: 'ใช่', confirmButtonColor: '#D8315B' }).then((res) => { if(res.isConfirmed) { isAdminLoggedIn = false; document.getElementById('main-nav-links').classList.add('d-none'); document.getElementById('btnLogin').classList.remove('d-none'); document.getElementById('btnLogoutTop').classList.add('d-none'); switchView('public-dashboard'); } }); }
         
         function showAdminTab(tabId) { document.querySelectorAll('.admin-tab').forEach(el => el.style.display = 'none'); const tab = document.getElementById(tabId); tab.style.display = 'block'; tab.classList.add('animate-up'); document.querySelectorAll('#admin-dashboard .list-group-item').forEach(btn => btn.classList.remove('active', 'shadow-sm')); event.currentTarget.classList.add('active', 'shadow-sm'); }
         
         function updateAdminStats() { document.getElementById('admin-count-schools').innerText = db.schools.length; document.getElementById('admin-count-results').innerText = db.results.length; if(document.getElementById('admin-count-sports')) document.getElementById('admin-count-sports').innerText = db.sportsList.length; if(document.getElementById('admin-count-ages')) document.getElementById('admin-count-ages').innerText = db.ageGroups.length; renderAdminSchools(); }
         function populateSchoolSelects() { let opts = `<option value="" disabled selected>-- เลือกโรงเรียน --</option>`; db.schools.forEach(s => opts += `<option value="${s.name}">${s.name}</option>`); ['inputGold', 'inputSilver', 'inputBronze'].forEach(id => document.getElementById(id).innerHTML = opts); }
         
-        function saveResult(e) {
+        async function saveResult(e) {
             e.preventDefault();
             const sport = document.getElementById('inputSport').value, type = document.getElementById('inputType').value, date = document.getElementById('inputDate').value;
             const g = document.getElementById('inputGold').value, s = document.getElementById('inputSilver').value, b = document.getElementById('inputBronze').value;
             
             if(!type) return Swal.fire('ผิดพลาด', 'กรุณาเลือกรุ่นอายุ', 'error'); if(g === s || g === b || s === b) return Swal.fire('ผิดพลาด', 'โรงเรียนห้ามซ้ำกัน', 'error');
 
-            db.results.push({ id: db.results.length + 1, sport: sport, type: type, date: date, gold_school: g, silver_school: s, bronze_school: b });
-            [g, s, b].forEach((schoolName, i) => { let sc = db.schools.find(x => x.name === schoolName); if(sc) { if(i===0) sc.gold++; else if(i===1) sc.silver++; else sc.bronze++; sc.total++; } });
-
-            sortSchoolsByMedals(); renderPublicDashboard(); renderMedalsTable(); renderResults(); updateAdminStats(); fireConfetti(); 
-            Swal.fire({icon: 'success', title: 'บันทึกสำเร็จ!', text: 'อัปเดตตารางคะแนนเหรียญเรียบร้อย', timer: 2000, showConfirmButton: false});
+            if (supabaseClient) {
+                Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                const { error } = await supabaseClient.from('results').insert([{ sport: sport, type: type, date: date, gold_school: g, silver_school: s, bronze_school: b }]);
+                if (error) return Swal.fire('Error', error.message, 'error');
+                await loadDataFromSupabase(); // โหลดและคำนวณใหม่
+                Swal.fire({icon: 'success', title: 'บันทึกสำเร็จ!', text: 'อัปเดตตารางคะแนนเรียบร้อย', timer: 2000, showConfirmButton: false});
+            } else {
+                db.results.push({ id: db.results.length + 1, sport: sport, type: type, date: date, gold_school: g, silver_school: s, bronze_school: b });
+                processDataAndRender(); // ทำงานโหมดจำลอง
+                Swal.fire({icon: 'success', title: 'บันทึกสำเร็จ!', text: 'อัปเดตตารางคะแนนเรียบร้อย', timer: 2000, showConfirmButton: false});
+            }
+            
+            fireConfetti(); 
             ['inputType','inputGold','inputSilver','inputBronze'].forEach(id => document.getElementById(id).selectedIndex = 0);
             renderPDFReport(); 
         }
