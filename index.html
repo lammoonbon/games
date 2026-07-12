@@ -462,7 +462,8 @@
                                 <form onsubmit="saveSiteSettings(event)">
                                     <div class="mb-4"><label class="form-label fw-bold dark:text-white">ชื่อเว็บไซต์ (แสดงที่หน้าแรกและด้านบน)</label><input type="text" class="form-control form-control-lg bg-light" id="settingSiteName" value="กีฬากลุ่มเครือข่ายสัมพันธ์ 2026" required></div>
                                     <div class="mb-4"><label class="form-label fw-bold dark:text-white">โลโก้เว็บไซต์ (URL รูปภาพ)</label><input type="url" class="form-control form-control-lg bg-light" id="settingSiteLogo" value="https://cdn-icons-png.flaticon.com/512/5551/5551284.png" required></div>
-                                    <div class="mb-5"><label class="form-label fw-bold dark:text-white">ชุดสีหลัก (Theme Color)</label><select class="form-select form-select-lg bg-light" id="settingSiteTheme"><option value="default">สดใส (แดง - น้ำเงิน)</option><option value="ocean">มหาสมุทร (เขียว - ฟ้า)</option><option value="royal">หรูหรา (ม่วงเข้ม - แดงเข้ม)</option><option value="midnight">เคร่งขรึม (ดำ - เทาเข้ม)</option></select></div>
+                                    <div class="mb-4"><label class="form-label fw-bold dark:text-white">ชุดสีหลัก (Theme Color)</label><select class="form-select form-select-lg bg-light" id="settingSiteTheme"><option value="default">สดใส (แดง - น้ำเงิน)</option><option value="ocean">มหาสมุทร (เขียว - ฟ้า)</option><option value="royal">หรูหรา (ม่วงเข้ม - แดงเข้ม)</option><option value="midnight">เคร่งขรึม (ดำ - เทาเข้ม)</option></select></div>
+                                    <div class="mb-5"><label class="form-label fw-bold dark:text-white">รหัส PIN สำหรับเจ้าหน้าที่</label><input type="password" class="form-control form-control-lg bg-light" id="settingAdminPin" value="1234" required><div class="form-text mt-2 dark:text-gray-400">ค่าเริ่มต้นคือ 1234 (สามารถเปลี่ยนเป็นตัวเลขหรือตัวอักษรอื่นได้)</div></div>
                                     <div class="border-top pt-4 text-end"><button type="submit" class="btn btn-primary btn-lg px-5 fw-bold rounded-pill shadow-lg bg-gradient-to-r from-blue-500 to-indigo-600 border-0"><i class="fas fa-save me-2"></i> บันทึกการตั้งค่า</button></div>
                                 </form>
                             </div>
@@ -525,12 +526,45 @@
         };
 
         let myPieChart = null; let isAdminLoggedIn = false;
+        let currentAdminPin = localStorage.getItem('adminPin') || '1234'; // ตัวแปรเก็บรหัส PIN ปัจจุบัน
 
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById('inputDate').valueAsDate = new Date();
             document.getElementById('currentYear').innerText = new Date().getFullYear() + 543;
+            loadSiteSettings(); // โหลดการตั้งค่าทั้งหมดที่เคยเซฟไว้
             loadDataFromSupabase(); // โหลดข้อมูลเมื่อเปิดหน้าเว็บ
         });
+
+        // 🌟 ฟังก์ชันโหลดการตั้งค่าที่ถูกบันทึกไว้ 🌟
+        function loadSiteSettings() {
+            const savedName = localStorage.getItem('siteName');
+            const savedLogo = localStorage.getItem('siteLogo');
+            const savedTheme = localStorage.getItem('siteTheme');
+            currentAdminPin = localStorage.getItem('adminPin') || '1234';
+
+            if(savedName) {
+                document.getElementById('settingSiteName').value = savedName;
+                document.querySelectorAll('.site-title-text').forEach(el => el.innerText = savedName);
+                document.querySelectorAll('.navbar-title-text').forEach(el => el.innerHTML = savedName);
+                document.title = savedName;
+            }
+            if(savedLogo) {
+                document.getElementById('settingSiteLogo').value = savedLogo;
+                const logoEl = document.getElementById('displaySiteLogo');
+                if(logoEl) logoEl.src = savedLogo;
+            }
+            if(savedTheme) {
+                document.getElementById('settingSiteTheme').value = savedTheme;
+                const root = document.documentElement;
+                if(savedTheme === 'ocean') { root.style.setProperty('--primary-blue', '#028090'); root.style.setProperty('--primary-red', '#00BFB2'); } 
+                else if(savedTheme === 'royal') { root.style.setProperty('--primary-blue', '#4A0E4E'); root.style.setProperty('--primary-red', '#81171B'); } 
+                else if(savedTheme === 'midnight') { root.style.setProperty('--primary-blue', '#141E30'); root.style.setProperty('--primary-red', '#243B55'); } 
+                else { root.style.setProperty('--primary-blue', '#0A2463'); root.style.setProperty('--primary-red', '#D8315B'); }
+            }
+            
+            const pinInput = document.getElementById('settingAdminPin');
+            if(pinInput) pinInput.value = currentAdminPin;
+        }
 
         /* --- 🌟 ฟังก์ชันโหลดข้อมูลจาก SUPABASE 🌟 --- */
         async function loadDataFromSupabase() {
@@ -675,6 +709,16 @@
         function saveSiteSettings(e) {
             e.preventDefault();
             const siteName = document.getElementById('settingSiteName').value; const siteLogo = document.getElementById('settingSiteLogo').value; const siteTheme = document.getElementById('settingSiteTheme').value;
+            const adminPin = document.getElementById('settingAdminPin').value;
+
+            // บันทึกลง LocalStorage (หน่วยความจำเบราว์เซอร์)
+            localStorage.setItem('siteName', siteName);
+            localStorage.setItem('siteLogo', siteLogo);
+            localStorage.setItem('siteTheme', siteTheme);
+            localStorage.setItem('adminPin', adminPin);
+            
+            currentAdminPin = adminPin; // อัปเดตตัวแปรระบบทันที
+
             document.querySelectorAll('.site-title-text').forEach(el => el.innerText = siteName); document.querySelectorAll('.navbar-title-text').forEach(el => el.innerHTML = siteName); document.title = siteName;
             const logoEl = document.getElementById('displaySiteLogo'); if(logoEl) logoEl.src = siteLogo;
             const root = document.documentElement;
@@ -886,7 +930,7 @@
 
         function showAdminLogin() {
             const nav = document.getElementById('navbarNav'); if (nav.classList.contains('show')) document.querySelector('.navbar-toggler').click();
-            Swal.fire({ title: '<span class="fw-bold">เข้าสู่ระบบจัดการ</span>', html: '<p class="text-muted">กรุณากรอกรหัส PIN (1234)</p>', input: 'password', showCancelButton: true, confirmButtonText: 'เข้าสู่ระบบ', cancelButtonText: 'ยกเลิก', confirmButtonColor: '#0A2463', borderRadius: '1rem', preConfirm: (pin) => { return pin === '1234' ? true : Swal.showValidationMessage('PIN ไม่ถูกต้อง!'); }
+            Swal.fire({ title: '<span class="fw-bold">เข้าสู่ระบบจัดการ</span>', html: '<p class="text-muted">กรุณากรอกรหัส PIN</p>', input: 'password', showCancelButton: true, confirmButtonText: 'เข้าสู่ระบบ', cancelButtonText: 'ยกเลิก', confirmButtonColor: '#0A2463', borderRadius: '1rem', preConfirm: (pin) => { return pin === currentAdminPin ? true : Swal.showValidationMessage('PIN ไม่ถูกต้อง!'); }
             }).then((res) => { 
                 if (res.isConfirmed) { 
                     isAdminLoggedIn = true; 
