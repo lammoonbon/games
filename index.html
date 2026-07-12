@@ -469,7 +469,7 @@
                                     <div class="mb-4"><label class="form-label fw-bold dark:text-white">ชื่อเว็บไซต์ (แสดงที่หน้าแรกและด้านบน)</label><input type="text" class="form-control form-control-lg bg-light" id="settingSiteName" value="กีฬากลุ่มเครือข่ายสัมพันธ์ 2026" required></div>
                                     <div class="mb-4"><label class="form-label fw-bold dark:text-white">โลโก้เว็บไซต์ (URL รูปภาพ)</label><input type="url" class="form-control form-control-lg bg-light" id="settingSiteLogo" value="https://cdn-icons-png.flaticon.com/512/5551/5551284.png" required></div>
                                     <div class="mb-4"><label class="form-label fw-bold dark:text-white">ชุดสีหลัก (Theme Color)</label><select class="form-select form-select-lg bg-light" id="settingSiteTheme"><option value="default">สดใส (แดง - น้ำเงิน)</option><option value="ocean">มหาสมุทร (เขียว - ฟ้า)</option><option value="royal">หรูหรา (ม่วงเข้ม - แดงเข้ม)</option><option value="midnight">เคร่งขรึม (ดำ - เทาเข้ม)</option></select></div>
-                                    <div class="mb-5"><label class="form-label fw-bold dark:text-white">รหัส PIN สำหรับเจ้าหน้าที่</label><input type="password" class="form-control form-control-lg bg-light" id="settingAdminPin" value="1234" required><div class="form-text mt-2 dark:text-gray-400">รหัสผ่านถูกบันทึกลงฐานข้อมูลส่วนกลาง (เปลี่ยนเครื่องก็ยังใช้รหัสเดียวกัน)</div></div>
+                                    <div class="mb-5"><label class="form-label fw-bold dark:text-white">รหัส PIN สำหรับเจ้าหน้าที่</label><input type="password" class="form-control form-control-lg bg-light" id="settingAdminPin" value="1234" required><div class="form-text mt-2 dark:text-gray-400">รหัสผ่านถูกบันทึกลงฐานข้อมูลส่วนกลาง (เปลี่ยนที่เครื่องเดียว เปลี่ยนทุกเครื่อง)</div></div>
                                     <div class="border-top pt-4 text-end"><button type="submit" class="btn btn-primary btn-lg px-5 fw-bold rounded-pill shadow-lg bg-gradient-to-r from-blue-500 to-indigo-600 border-0"><i class="fas fa-save me-2"></i> บันทึกการตั้งค่า</button></div>
                                 </form>
                             </div>
@@ -498,6 +498,8 @@
             <p class="mb-0 text-white-50 small mt-2">&copy; <span id="currentYear">2026</span> Sports Competition Management System.</p>
         </div>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         // ==========================================
@@ -532,49 +534,15 @@
         };
 
         let myPieChart = null; let isAdminLoggedIn = false;
-        let currentAdminPin = localStorage.getItem('adminPin') || '1234'; // ตัวแปรเก็บรหัส PIN ปัจจุบัน
+        let currentAdminPin = '1234'; // ตัวแปรเก็บรหัส PIN ปัจจุบัน
 
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById('inputDate').valueAsDate = new Date();
             document.getElementById('currentYear').innerText = new Date().getFullYear() + 543;
-            loadSiteSettings(); // โหลดการตั้งค่าทั้งหมดที่เคยเซฟไว้
-            loadDataFromSupabase(); // โหลดข้อมูลเมื่อเปิดหน้าเว็บ
+            loadDataFromSupabase(); // โหลดข้อมูลเมื่อเปิดหน้าเว็บ (รวมถึง PIN)
         });
 
-        // 🌟 ฟังก์ชันโหลดการตั้งค่าที่ถูกบันทึกไว้ 🌟
-        function loadSiteSettings() {
-            const savedName = localStorage.getItem('siteName');
-            const savedLogo = localStorage.getItem('siteLogo');
-            const savedTheme = localStorage.getItem('siteTheme');
-            currentAdminPin = localStorage.getItem('adminPin') || '1234';
-
-            if(savedName) {
-                document.getElementById('settingSiteName').value = savedName;
-                document.querySelectorAll('.site-title-text').forEach(el => el.innerText = savedName);
-                document.querySelectorAll('.navbar-title-text').forEach(el => el.innerHTML = savedName);
-                document.title = savedName;
-            }
-            if(savedLogo) {
-                document.getElementById('settingSiteLogo').value = savedLogo;
-                const logoEl = document.getElementById('displaySiteLogo');
-                if(logoEl) logoEl.src = savedLogo;
-                const faviconEl = document.getElementById('dynamic-favicon');
-                if(faviconEl) faviconEl.href = savedLogo;
-            }
-            if(savedTheme) {
-                document.getElementById('settingSiteTheme').value = savedTheme;
-                const root = document.documentElement;
-                if(savedTheme === 'ocean') { root.style.setProperty('--primary-blue', '#028090'); root.style.setProperty('--primary-red', '#00BFB2'); } 
-                else if(savedTheme === 'royal') { root.style.setProperty('--primary-blue', '#4A0E4E'); root.style.setProperty('--primary-red', '#81171B'); } 
-                else if(savedTheme === 'midnight') { root.style.setProperty('--primary-blue', '#141E30'); root.style.setProperty('--primary-red', '#243B55'); } 
-                else { root.style.setProperty('--primary-blue', '#0A2463'); root.style.setProperty('--primary-red', '#D8315B'); }
-            }
-            
-            const pinInput = document.getElementById('settingAdminPin');
-            if(pinInput) pinInput.value = currentAdminPin;
-        }
-
-        // 🌟 ฟังก์ชันนำการตั้งค่ามาแสดงผล (ใช้ร่วมกันตอนดึงจาก DB) 🌟
+        // 🌟 ฟังก์ชันนำการตั้งค่ามาแสดงผล (ใช้ดึงข้อมูล Settings จาก DB) 🌟
         function applySiteSettings(data) {
             const { site_name, site_logo, site_theme, admin_pin } = data;
             if(site_name) {
@@ -621,7 +589,7 @@
                     supabaseClient.from('age_groups').select('name'),
                     supabaseClient.from('schools').select('*'),
                     supabaseClient.from('results').select('*'),
-                    supabaseClient.from('settings').select('*').eq('id', 1).single()
+                    supabaseClient.from('settings').select('*').eq('id', 1).single() // โหลดการตั้งค่าและ PIN
                 ]);
 
                 // อัปเดตตัวแปร db (ถ้ามีข้อมูลให้ใช้ข้อมูลใหม่ ถ้าไม่มีให้เป็น Array ว่าง)
@@ -630,7 +598,7 @@
                 if (resSchools.data) db.schools = resSchools.data;
                 if (resResults.data) db.results = resResults.data;
 
-                // นำการตั้งค่าและ PIN จาก DB มาใช้งาน
+                // นำการตั้งค่าและ PIN จาก DB มาอัปเดตบนหน้าเว็บ
                 if (resSettings.data) applySiteSettings(resSettings.data);
 
                 processDataAndRender();
@@ -749,7 +717,9 @@
 
         async function saveSiteSettings(e) {
             e.preventDefault();
-            const siteName = document.getElementById('settingSiteName').value; const siteLogo = document.getElementById('settingSiteLogo').value; const siteTheme = document.getElementById('settingSiteTheme').value;
+            const siteName = document.getElementById('settingSiteName').value; 
+            const siteLogo = document.getElementById('settingSiteLogo').value; 
+            const siteTheme = document.getElementById('settingSiteTheme').value;
             const adminPin = document.getElementById('settingAdminPin').value;
 
             if (supabaseClient) {
@@ -767,14 +737,10 @@
                 if (error) return Swal.fire('Error', error.message, 'error');
                 
                 applySiteSettings({ site_name: siteName, site_logo: siteLogo, site_theme: siteTheme, admin_pin: adminPin });
-                Swal.fire({icon: 'success', title: 'บันทึกการตั้งค่าสำเร็จ', timer: 1500, showConfirmButton: false});
+                Swal.fire({icon: 'success', title: 'บันทึกการตั้งค่าสำเร็จ', text: 'PIN ของทุกเครื่องถูกเปลี่ยนเป็นรหัสใหม่แล้ว', timer: 2000, showConfirmButton: false});
             } else {
-                // บันทึกลง LocalStorage (โหมดออฟไลน์)
-                localStorage.setItem('siteName', siteName);
-                localStorage.setItem('siteLogo', siteLogo);
-                localStorage.setItem('siteTheme', siteTheme);
-                localStorage.setItem('adminPin', adminPin);
-                
+                // บันทึกลง LocalStorage (กรณีออฟไลน์หรือไม่มี Supabase)
+                currentAdminPin = adminPin;
                 applySiteSettings({ site_name: siteName, site_logo: siteLogo, site_theme: siteTheme, admin_pin: adminPin });
                 Swal.fire({icon: 'success', title: 'บันทึกการตั้งค่าสำเร็จ', timer: 1500, showConfirmButton: false});
             }
@@ -887,7 +853,7 @@
 
             const top3 = db.schools.slice(0, 3); let podiumHTML = "";
             
-            // ฟังก์ชันสร้างกล่องคะแนนติดฐาน (ใช้ FontAwesome แทน Emoji)
+            // ฟังก์ชันสร้างกล่องคะแนนติดฐาน
             const getStats = (school) => `
                 <div class="position-absolute w-100" style="bottom: 10px; left: 0; padding: 0 10px;">
                     <div class="d-flex justify-content-around align-items-center bg-black bg-opacity-25 rounded-pill py-1 px-1 shadow-inner" style="font-family: 'Kanit', sans-serif;">
@@ -984,12 +950,23 @@
 
         function showAdminLogin() {
             const nav = document.getElementById('navbarNav'); if (nav.classList.contains('show')) document.querySelector('.navbar-toggler').click();
-            Swal.fire({ title: '<span class="fw-bold">เข้าสู่ระบบจัดการ</span>', html: '<p class="text-muted">กรุณากรอกรหัส PIN</p>', input: 'password', showCancelButton: true, confirmButtonText: 'เข้าสู่ระบบ', cancelButtonText: 'ยกเลิก', confirmButtonColor: '#0A2463', borderRadius: '1rem', preConfirm: (pin) => { return pin === currentAdminPin ? true : Swal.showValidationMessage('PIN ไม่ถูกต้อง!'); }
+            Swal.fire({ 
+                title: '<span class="fw-bold">เข้าสู่ระบบจัดการ</span>', 
+                html: '<p class="text-muted">กรุณากรอกรหัส PIN</p>', 
+                input: 'password', 
+                showCancelButton: true, 
+                confirmButtonText: 'เข้าสู่ระบบ', 
+                cancelButtonText: 'ยกเลิก', 
+                confirmButtonColor: '#0A2463', 
+                borderRadius: '1rem', 
+                preConfirm: (pin) => { 
+                    // ตรวจสอบ PIN ตรงกับ currentAdminPin ที่ดึงมาจาก Supabase หรือไม่
+                    return pin === currentAdminPin ? true : Swal.showValidationMessage('PIN ไม่ถูกต้อง!'); 
+                }
             }).then((res) => { 
                 if (res.isConfirmed) { 
                     isAdminLoggedIn = true; 
                     fireConfetti(); 
-                    // 🌟 แสดง/ซ่อนเฉพาะปุ่ม เจ้าหน้าที่ และ ออกจากระบบ 🌟
                     document.getElementById('btnLogin').classList.add('d-none'); 
                     document.getElementById('btnLogoutTop').classList.remove('d-none'); 
                     
@@ -1001,7 +978,6 @@
             Swal.fire({ title: 'ออกจากระบบ?', icon: 'question', showCancelButton: true, confirmButtonText: 'ใช่', confirmButtonColor: '#D8315B' }).then((res) => { 
                 if(res.isConfirmed) { 
                     isAdminLoggedIn = false; 
-                    // 🌟 แสดง/ซ่อนเฉพาะปุ่ม เจ้าหน้าที่ และ ออกจากระบบ 🌟
                     document.getElementById('btnLogin').classList.remove('d-none'); 
                     document.getElementById('btnLogoutTop').classList.add('d-none'); 
                     switchView('public-dashboard'); 
