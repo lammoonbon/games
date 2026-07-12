@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบรายงานผลการแข่งขันกีฬาเครือข่าย</title>
     
+    <!-- 🌟 เพิ่ม Favicon (ไอคอนบนแท็บเบราว์เซอร์) 🌟 -->
+    <link id="dynamic-favicon" rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/5551/5551284.png">
+    
     <!-- Google Fonts: Kanit -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
@@ -552,6 +555,8 @@
                 document.getElementById('settingSiteLogo').value = savedLogo;
                 const logoEl = document.getElementById('displaySiteLogo');
                 if(logoEl) logoEl.src = savedLogo;
+                const faviconEl = document.getElementById('dynamic-favicon');
+                if(faviconEl) faviconEl.href = savedLogo;
             }
             if(savedTheme) {
                 document.getElementById('settingSiteTheme').value = savedTheme;
@@ -721,6 +726,7 @@
 
             document.querySelectorAll('.site-title-text').forEach(el => el.innerText = siteName); document.querySelectorAll('.navbar-title-text').forEach(el => el.innerHTML = siteName); document.title = siteName;
             const logoEl = document.getElementById('displaySiteLogo'); if(logoEl) logoEl.src = siteLogo;
+            const faviconEl = document.getElementById('dynamic-favicon'); if(faviconEl) faviconEl.href = siteLogo;
             const root = document.documentElement;
             if(siteTheme === 'ocean') { root.style.setProperty('--primary-blue', '#028090'); root.style.setProperty('--primary-red', '#00BFB2'); } else if(siteTheme === 'royal') { root.style.setProperty('--primary-blue', '#4A0E4E'); root.style.setProperty('--primary-red', '#81171B'); } else if(siteTheme === 'midnight') { root.style.setProperty('--primary-blue', '#141E30'); root.style.setProperty('--primary-red', '#243B55'); } else { root.style.setProperty('--primary-blue', '#0A2463'); root.style.setProperty('--primary-red', '#D8315B'); }
             Swal.fire({icon: 'success', title: 'บันทึกการตั้งค่าสำเร็จ', timer: 1500, showConfirmButton: false});
