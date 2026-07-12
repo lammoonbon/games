@@ -60,6 +60,7 @@
         /* Navbar & Menu Icon */
         .navbar-custom { background: rgba(10, 36, 99, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
         .collapse.show, .collapsing { visibility: visible !important; }
+        /* บังคับวาดไอคอน 3 ขีดแบบ SVG เพื่อไม่ให้หายตอนอัพขึ้น GitHub */
         .custom-toggler-icon { display: inline-block; width: 1.5em; height: 1.5em; vertical-align: middle; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: center; background-size: 100%; }
         
         /* 🌟 Super Vibrant Hero Banner */
@@ -80,15 +81,14 @@
         .grad-bronze { background: linear-gradient(135deg, #c79081 0%, #dfa579 100%); box-shadow: 0 15px 30px rgba(223, 165, 121, 0.3); color: #333; }
         .grad-bronze .bg-icon { opacity: 0.1; }
 
-        /* 🌟 Podium Styling */
+        /* 🌟 Podium Styling (ปรับให้ใหญ่ขึ้นและกันข้อความล้น) */
         .podium-container { display: flex; align-items: flex-end; justify-content: center; gap: 0.75rem; margin-top: 3rem; min-height: 340px; }
-        .podium-item { border-radius: 1.5rem 1.5rem 0 0; padding: 1.5rem 1rem; text-align: center; color: white; position: relative; transition: all 0.4s ease; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;}
+        .podium-item { border-radius: 1.5rem 1.5rem 0 0; padding: 1.5rem 1rem; text-align: center; color: white; position: relative; transition: all 0.4s ease; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-bottom: 50px;}
         .podium-item:hover { filter: brightness(1.15); transform: scale(1.03); z-index: 10; }
         .podium-1 { background: linear-gradient(135deg, #F9D423 0%, #FF4E50 100%); height: 300px; order: 2; width: 34%; z-index: 3; box-shadow: 0 -15px 40px rgba(255, 78, 80, 0.5);}
         .podium-2 { background: linear-gradient(135deg, #bdc3c7 0%, #2c3e50 100%); height: 240px; order: 1; width: 28%; z-index: 2; box-shadow: 0 -10px 25px rgba(44, 62, 80, 0.4);}
         .podium-3 { background: linear-gradient(135deg, #ba8b02 0%, #181818 100%); height: 200px; order: 3; width: 28%; z-index: 1; box-shadow: 0 -10px 25px rgba(24, 24, 24, 0.4);}
         
-        /* เหรียญและการจัดวางด้านล่างของแท่น */
         .podium-school-name { font-weight: 800; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 95%; margin-top: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
         .podium-medals-box { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 90%; background: rgba(0,0,0,0.3); border-radius: 1rem; padding: 6px 0; display: flex; justify-content: center; gap: 10px; font-weight: bold; font-size: 0.85rem;}
         
@@ -167,11 +167,11 @@
             .medal-val-mobile { font-size: 1rem !important; }
         }
 
-        /* 🌟 Progress Ring */
+        /* 🌟 Progress Ring (ปรับขนาดใหญ่ขึ้นเป็น 280px) */
         .progress-ring { transform: rotate(-90deg); transform-origin: 50% 50%; }
         .progress-ring__circle-bg { stroke: #e2e8f0; transition: stroke 0.3s ease; }
         body.dark-mode .progress-ring__circle-bg { stroke: #334155; }
-        .progress-ring__circle { transition: stroke-dashoffset 1.5s cubic-bezier(0.16, 1, 0.3, 1); stroke-dasharray: 630; stroke-dashoffset: 630; /* รัศมี 100 -> เส้นรอบวง = 2*PI*100 = 628 */ }
+        .progress-ring__circle { transition: stroke-dashoffset 1.5s cubic-bezier(0.16, 1, 0.3, 1); stroke-dasharray: 879; stroke-dashoffset: 879; /* รัศมี 140 -> เส้นรอบวง = 2*PI*140 ≈ 879 */ }
         .progress-text-container { display: flex; flex-direction: column; align-items: center; justify-content: center; }
         
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-light); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
@@ -185,6 +185,7 @@
     <div id="loadingScreen" class="loading-overlay">
         <div class="spinner-border text-primary spinner-border-xl mb-3" role="status"></div>
         <h4 class="fw-bold text-primary">กำลังโหลดระบบ...</h4>
+        <small class="text-muted mt-2">หากค้างเกิน 8 วินาที ระบบจะเข้าสู่หน้าเว็บอัตโนมัติ</small>
     </div>
 
     <!-- Navbar -->
@@ -214,7 +215,6 @@
             </div>
             
             <div class="collapse navbar-collapse" id="navbarNav">
-                <!-- ยกเลิกการซ่อน d-none เพื่อให้ทุกคนเห็นเมนู -->
                 <ul class="navbar-nav me-auto ps-lg-4 mt-3 mt-lg-0" id="main-nav-links">
                     <li class="nav-item"><a class="nav-link fw-bold text-uppercase px-3" href="#" onclick="switchView('public-dashboard')">หน้าแรก</a></li>
                     <li class="nav-item"><a class="nav-link fw-bold text-uppercase px-3" href="#" onclick="switchView('public-matches')">โปรแกรม & ผลแข่ง</a></li>
@@ -296,7 +296,7 @@
                         </div>
                     </div>
                     
-                    <!-- Progress Ring (คำนวณจากตารางแข่ง matches) -->
+                    <!-- Progress Ring (วงแหวนความคืบหน้า) -->
                     <div class="col-lg-5 col-xl-4 mt-4 mt-lg-0">
                         <div class="chart-card h-100 d-flex flex-column">
                             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -309,12 +309,11 @@
                             
                             <div class="flex-grow-1 d-flex flex-column justify-content-center">
                                 <div class="text-center mb-4 pt-4">
-                                    <!-- ขยายวงแหวนเป็น 280px -->
                                     <div class="mx-auto position-relative" style="width: 280px; height: 280px;">
                                         <svg class="progress-ring" width="280" height="280">
-                                            <!-- รัศมี r=100 -> วงแหวนจะอยู่ในกล่อง 280 พอดี -->
-                                            <circle class="progress-ring__circle-bg" stroke-width="18" fill="transparent" r="100" cx="140" cy="140"/>
-                                            <circle class="progress-ring__circle" stroke="url(#gradientProgress)" stroke-width="18" fill="transparent" r="100" cx="140" cy="140" stroke-linecap="round"/>
+                                            <!-- รัศมี 140 -> เส้นรอบวง = 2 * PI * 140 ≈ 879 -->
+                                            <circle class="progress-ring__circle-bg" stroke-width="20" fill="transparent" r="140" cx="140" cy="140"/>
+                                            <circle class="progress-ring__circle" stroke="url(#gradientProgress)" stroke-width="20" fill="transparent" r="140" cx="140" cy="140" stroke-linecap="round"/>
                                             <defs>
                                                 <linearGradient id="gradientProgress" x1="0%" y1="0%" x2="100%" y2="0%">
                                                     <stop offset="0%" stop-color="#00c6ff" />
@@ -323,7 +322,7 @@
                                             </defs>
                                         </svg>
                                         <div class="progress-text-container position-absolute top-50 start-50 translate-middle w-100">
-                                            <h2 class="fw-black mb-0 text-gradient-primary" style="font-size: 3.5rem; line-height: 1;" id="progressPercent">0%</h2>
+                                            <h2 class="fw-black mb-0 text-gradient-primary" style="font-size: 4.5rem; line-height: 1;" id="progressPercent">0%</h2>
                                             <span class="text-muted fw-bold mt-2" style="font-size: 1.1rem;">แข่งเสร็จแล้ว</span>
                                         </div>
                                     </div>
@@ -356,7 +355,7 @@
             </div>
         </div>
 
-        <!-- ================= PUBLIC MATCHES (ตารางแข่ง & ผลสกอร์) ================= -->
+        <!-- ================= PUBLIC MATCHES ================= -->
         <div id="public-matches" class="view-section container mt-5 min-h-screen">
             <div class="text-center mb-5 animate-up">
                 <h1 class="fw-black text-gradient-primary text-5xl mb-2">ตารางแข่งขัน & ผลสกอร์</h1>
@@ -385,9 +384,7 @@
                 </div>
             </div>
 
-            <div class="row g-4 pb-5" id="publicMatchesContainer">
-                <!-- Match Cards จะถูกใส่ด้วย Javascript -->
-            </div>
+            <div class="row g-4 pb-5" id="publicMatchesContainer"></div>
         </div>
 
         <!-- ================= PUBLIC MEDALS TABLE ================= -->
@@ -416,7 +413,7 @@
             </div>
         </div>
 
-        <!-- ================= PUBLIC RESULTS (สรุปเหรียญรายกีฬา) ================= -->
+        <!-- ================= PUBLIC RESULTS ================= -->
         <div id="public-results" class="view-section container mt-5 min-h-screen">
             <div class="text-center mb-5 animate-up">
                 <h1 class="fw-black text-gradient-gold text-5xl mb-2">สรุปเหรียญรายกีฬา</h1>
@@ -440,7 +437,6 @@
         <!-- ================= ADMIN DASHBOARD ================= -->
         <div id="admin-dashboard" class="view-section container-fluid bg-light min-h-screen pt-4 dark:bg-gray-900">
             <div class="row px-2 px-md-4">
-                <!-- Sidebar -->
                 <div class="col-md-3 col-lg-2 mb-4 animate-up">
                     <div class="bg-white rounded-4 shadow-sm p-3 sticky-top dark:bg-gray-800" style="top: 100px;">
                         <div class="text-center mb-4 pt-3">
@@ -462,10 +458,8 @@
                     </div>
                 </div>
 
-                <!-- Admin Content -->
                 <div class="col-md-9 col-lg-10 animate-up delay-100">
                     
-                    <!-- ภาพรวม -->
                     <div id="admin-home" class="admin-tab active">
                         <h3 class="fw-bolder mb-4 text-gradient-primary">Admin Dashboard</h3>
                         <div class="row g-4 mb-4">
@@ -476,10 +470,8 @@
                         </div>
                     </div>
 
-                    <!-- จัดการตารางแข่ง (ใหม่) -->
                     <div id="admin-matches" class="admin-tab" style="display: none;">
                         <h3 class="fw-bolder mb-4 text-info"><i class="fas fa-calendar-alt me-2"></i> จัดการตารางแข่งขัน</h3>
-                        
                         <div class="card shadow-sm border-0 rounded-4 mb-4 dark:bg-gray-800">
                             <div class="card-body p-4">
                                 <h5 class="fw-bold border-bottom pb-3 mb-4 dark:text-white">เพิ่มแมตช์ใหม่</h5>
@@ -487,44 +479,24 @@
                                     <div class="col-md-4"><label class="form-label fw-bold dark:text-white">ชนิดกีฬา</label><select class="form-select" id="matchSport" required></select></div>
                                     <div class="col-md-4"><label class="form-label fw-bold dark:text-white">รุ่นอายุ</label><select class="form-select" id="matchAge" required></select></div>
                                     <div class="col-md-4"><label class="form-label fw-bold dark:text-white">สนามแข่งขัน</label><input type="text" class="form-control" id="matchVenue" required placeholder="เช่น สนามกีฬากลาง"></div>
-                                    
                                     <div class="col-md-4"><label class="form-label fw-bold dark:text-white">วันที่</label><input type="date" class="form-control" id="matchDate" required></div>
                                     <div class="col-md-4"><label class="form-label fw-bold dark:text-white">เวลา</label><input type="time" class="form-control" id="matchTime" required></div>
-                                    <div class="col-md-4"></div> <!-- ว่างไว้จัด layout -->
-
+                                    <div class="col-md-4"></div>
                                     <div class="col-md-5"><label class="form-label fw-bold text-primary">ทีม A (เหย้า)</label><select class="form-select border-primary" id="matchTeamA" required></select></div>
                                     <div class="col-md-2 d-flex align-items-end justify-content-center fw-black text-muted pb-2">VS</div>
                                     <div class="col-md-5"><label class="form-label fw-bold text-danger">ทีม B (เยือน)</label><select class="form-select border-danger" id="matchTeamB" required></select></div>
-                                    
-                                    <div class="col-12 mt-4 text-end">
-                                        <button type="submit" class="btn btn-info text-white fw-bold px-4 rounded-pill shadow-sm"><i class="fas fa-plus me-2"></i> บันทึกตารางแข่ง</button>
-                                    </div>
+                                    <div class="col-12 mt-4 text-end"><button type="submit" class="btn btn-info text-white fw-bold px-4 rounded-pill shadow-sm"><i class="fas fa-plus me-2"></i> บันทึกตารางแข่ง</button></div>
                                 </form>
                             </div>
                         </div>
-
                         <div class="table-custom-wrapper bg-white p-3 dark:bg-gray-800 mt-4">
                             <h5 class="fw-bold mb-3 dark:text-white">รายการแข่งขันทั้งหมด</h5>
                             <div class="table-responsive">
-                                <table class="table table-hover align-middle border-0 text-center text-nowrap">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>วัน-เวลา</th>
-                                            <th>กีฬา/รุ่น</th>
-                                            <th class="text-end">ทีม A</th>
-                                            <th>สกอร์</th>
-                                            <th class="text-start">ทีม B</th>
-                                            <th>สถานะ</th>
-                                            <th>จัดการ</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="adminMatchesTableBody"></tbody>
-                                </table>
+                                <table class="table table-hover align-middle border-0 text-center text-nowrap"><thead class="table-light"><tr><th>วัน-เวลา</th><th>กีฬา/รุ่น</th><th class="text-end">ทีม A</th><th>สกอร์</th><th class="text-start">ทีม B</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="adminMatchesTableBody"></tbody></table>
                             </div>
                         </div>
                     </div>
 
-                    <!-- มอบเหรียญรางวัล (ของเดิม) -->
                     <div id="admin-record" class="admin-tab" style="display: none;">
                         <div class="card shadow-sm border-0 rounded-4 mb-4 overflow-hidden">
                             <div class="card-header bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-4 border-0"><h4 class="mb-0 fw-bold"><i class="fas fa-medal me-2"></i> มอบเหรียญรางวัล</h4></div>
@@ -580,7 +552,6 @@
                 </div>
             </div>
         </div>
-
     </main>
 
     <footer class="bg-dark text-white text-center py-5 mt-auto border-top border-secondary">
@@ -633,16 +604,26 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzdHJ4bnh4Z3lsZGRjdm91aGpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NTk1MzgsImV4cCI6MjA5OTQzNTUzOH0.71re9dZBYPcjap7-S9dBo422I0hBI7xzF1hGvM_LqgE';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const db = {
-            sportsList: [], ageGroups: [], schools: [], results: [], settings: null, matches: []
-        };
+        const db = { sportsList: [], ageGroups: [], schools: [], results: [], settings: null, matches: [] };
+        let isAdminLoggedIn = false; let currentMatchFilter = 'all'; let fallbackTimer;
 
-        let myPieChart = null; let isAdminLoggedIn = false; let currentMatchFilter = 'all';
+        // ฟังก์ชันช่วยปิดหน้าโหลดอย่างปลอดภัย
+        function hideLoadingScreen() {
+            const loader = document.getElementById('loadingScreen');
+            if (loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }
+            if(fallbackTimer) clearTimeout(fallbackTimer);
+        }
 
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById('inputDate').valueAsDate = new Date();
             document.getElementById('matchDate').valueAsDate = new Date();
             document.getElementById('currentYear').innerText = new Date().getFullYear() + 543;
+            
+            // ตั้งเวลาฉุกเฉิน (Fail-safe) ถ้าโหลดนานเกิน 8 วิ ให้ปิดหน้าโหลดทิ้งทันที
+            fallbackTimer = setTimeout(() => { hideLoadingScreen(); }, 8000);
             fetchData();
         });
 
@@ -658,8 +639,9 @@
                     supabase.from('matches').select('*').order('match_date', { ascending: true }).order('match_time', { ascending: true })
                 ]);
 
-                // แจ้งเตือนใน Console หากตารางยังไม่ถูกสร้าง
-                if (resMatches && resMatches.error) console.warn("Matches Error:", resMatches.error.message);
+                // แจ้งเตือนข้อผิดพลาดใน Console ถ้าฐานข้อมูลตารางไหนยังมีปัญหา
+                if (resMatches.error) console.warn("Matches Data Error:", resMatches.error.message);
+                if (resSettings.error) console.warn("Settings Data Error:", resSettings.error.message);
 
                 db.settings = resSettings.data || { site_name: 'กีฬากลุ่มเครือข่ายสัมพันธ์', site_logo: 'https://cdn-icons-png.flaticon.com/512/5551/5551284.png', site_theme: 'default', admin_pin: '1234' };
                 db.schools = resSchools.data || [];
@@ -685,25 +667,16 @@
                 renderAdminMatches();
                 updateAdminStats();
 
+                // ดึงข้อมูลเสร็จแล้ว ปิดหน้าโหลด
                 hideLoadingScreen();
 
             } catch (error) {
-                console.error("Error fetching data:", error);
-                hideLoadingScreen(); // บังคับปิดหน้าโหลดแม้เกิด Error
-                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้ กรุณาตรวจสอบว่าสร้างตารางครบแล้ว', 'error');
+                console.error("Critical Fetch Error:", error);
+                hideLoadingScreen(); // เกิด Error ก็ต้องปิดหน้าโหลด
+                Swal.fire('ข้อผิดพลาด', 'มีบางอย่างผิดปกติในการดึงข้อมูลจากฐานข้อมูล', 'error');
             }
         }
 
-        // ฟังก์ชันช่วยปิดหน้าโหลด
-        function hideLoadingScreen() {
-            const loader = document.getElementById('loadingScreen');
-            if (loader) {
-                loader.style.opacity = '0';
-                setTimeout(() => loader.style.display = 'none', 500);
-            }
-        }
-
-        // นำการตั้งค่าไปใช้
         function applySettings() {
             if(!db.settings) return;
             const root = document.documentElement;
@@ -726,7 +699,6 @@
             }
         }
 
-        // คำนวณเหรียญรางวัลจากตาราง Results
         function calculateMedalsFromResults() {
             db.schools.forEach(s => { s.gold = 0; s.silver = 0; s.bronze = 0; s.total = 0; });
             db.results.forEach(r => {
@@ -738,19 +710,82 @@
         function sortSchoolsByMedals() { db.schools.sort((a, b) => { if (b.gold !== a.gold) return b.gold - a.gold; if (b.silver !== a.silver) return b.silver - a.silver; if (b.bronze !== a.bronze) return b.bronze - a.bronze; return b.total - a.total; }); }
         function calculateTotals() { let tGold = 0, tSilver = 0, tBronze = 0; db.schools.forEach(s => { tGold += s.gold; tSilver += s.silver; tBronze += s.bronze; }); return { tGold, tSilver, tBronze, total: tGold + tSilver + tBronze }; }
         function getSchoolLogo(name) { const school = db.schools.find(s => s.name === name); return school ? school.logo : 'https://ui-avatars.com/api/?name=?&background=random'; }
-        function getShortSchoolName(name) { 
-            if (!name) return ""; 
-            return name.replace('โรงเรียน', 'ร.ร.'); 
-        }
+        function getShortSchoolName(name) { return name ? name.replace('โรงเรียน', 'ร.ร.') : ""; }
 
         // ==========================================
-        // 🌟 ส่วนแอดมิน แมตช์การแข่งขัน
+        // 🌟 ส่วนตารางแมตช์การแข่งขัน (Matches)
         // ==========================================
+        function filterPublicMatches(status) {
+            if(status) currentMatchFilter = status;
+            ['btnFilterAllMatches', 'btnFilterScheduled', 'btnFilterCompleted'].forEach(id => {
+                document.getElementById(id).classList.remove('btn-primary', 'active');
+                document.getElementById(id).classList.add('text-muted');
+            });
+            let activeBtn = currentMatchFilter === 'all' ? 'btnFilterAllMatches' : (currentMatchFilter === 'scheduled' ? 'btnFilterScheduled' : 'btnFilterCompleted');
+            document.getElementById(activeBtn).classList.remove('text-muted');
+            document.getElementById(activeBtn).classList.add('btn-primary', 'active');
+            renderPublicMatches();
+        }
+
+        function renderPublicMatches() {
+            const filterSport = document.getElementById('filterMatchSport').value; 
+            const searchTxt = document.getElementById('searchMatch').value.toLowerCase(); 
+            let html = "";
+            
+            let filtered = db.matches.filter(m => 
+                (filterSport === 'all' || !filterSport || m.sport === filterSport) && 
+                (currentMatchFilter === 'all' || m.status === currentMatchFilter) &&
+                (m.team_a.toLowerCase().includes(searchTxt) || m.team_b.toLowerCase().includes(searchTxt) || m.sport.toLowerCase().includes(searchTxt))
+            );
+
+            if(filtered.length === 0) { html = `<div class="col-12 text-center py-5 text-muted"><div class="bg-white rounded-circle d-inline-flex p-4 shadow-sm mb-3"><i class="fas fa-calendar-times fa-3x text-light"></i></div><h4 class="fw-bold">ไม่พบโปรแกรมการแข่งขัน</h4></div>`; } 
+            else { 
+                filtered.forEach((m, idx) => { 
+                    let delay = (idx % 3) * 100; 
+                    let timeFmt = m.match_time ? m.match_time.substring(0, 5) + " น." : "";
+                    let dateFmt = m.match_date ? new Date(m.match_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' }) : "";
+                    
+                    let scoreHtml = m.status === 'completed' 
+                        ? `<div class="match-score-box shadow-sm"><span class="text-primary">${m.score_a}</span> <span class="text-muted fs-5 mx-1">-</span> <span class="text-danger">${m.score_b}</span></div>`
+                        : `<div class="match-vs">VS</div>`;
+                    
+                    let statusBadge = m.status === 'completed' ? `<span class="badge bg-success shadow-sm">จบแมตช์</span>` : `<span class="badge bg-warning text-dark shadow-sm">รอแข่ง</span>`;
+
+                    html += `
+                    <div class="col-md-6 col-lg-4 animate-up" style="animation-delay: ${delay}ms">
+                        <div class="match-card h-100 p-3 p-md-4 text-center">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 fw-bold"><i class="fas fa-running me-1"></i> ${m.sport} - ${m.age_group}</span>
+                                ${statusBadge}
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                                <div style="width: 40%;">
+                                    <img src="${getSchoolLogo(m.team_a)}" width="65" height="65" class="rounded-circle shadow mb-2 border border-2 border-primary object-cover">
+                                    <div class="fw-bold text-sm text-truncate text-primary">${getShortSchoolName(m.team_a)}</div>
+                                </div>
+                                <div style="width: 20%;" class="d-flex justify-content-center align-items-center">${scoreHtml}</div>
+                                <div style="width: 40%;">
+                                    <img src="${getSchoolLogo(m.team_b)}" width="65" height="65" class="rounded-circle shadow mb-2 border border-2 border-danger object-cover">
+                                    <div class="fw-bold text-sm text-truncate text-danger">${getShortSchoolName(m.team_b)}</div>
+                                </div>
+                            </div>
+                            <div class="bg-light dark:bg-gray-700 rounded-3 p-2 text-muted small fw-bold d-flex justify-content-around">
+                                <span><i class="far fa-calendar-alt text-primary"></i> ${dateFmt}</span>
+                                <span><i class="far fa-clock text-warning"></i> ${timeFmt}</span>
+                                <span class="text-truncate" style="max-width:40%;"><i class="fas fa-map-marker-alt text-danger"></i> ${m.venue}</span>
+                            </div>
+                        </div>
+                    </div>`; 
+                }); 
+            }
+            document.getElementById('publicMatchesContainer').innerHTML = html;
+        }
+
         function renderAdminMatches() {
             let html = "";
             db.matches.forEach((m) => {
-                let timeFmt = m.match_time.substring(0, 5);
-                let dateFmt = new Date(m.match_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' });
+                let timeFmt = m.match_time ? m.match_time.substring(0, 5) : "";
+                let dateFmt = m.match_date ? new Date(m.match_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' }) : "";
                 let statusHtml = m.status === 'completed' ? `<span class="badge bg-success">จบแล้ว</span>` : `<span class="badge bg-warning text-dark">รอแข่ง</span>`;
                 let scoreHtml = m.status === 'completed' ? `<span class="fw-black fs-5">${m.score_a} - ${m.score_b}</span>` : `<span class="text-muted">VS</span>`;
                 let btnHtml = m.status === 'scheduled' 
@@ -849,7 +884,7 @@
                     db.matches[idx].score_b = scoreB;
                 }
                 scoreModalInstance.hide();
-                renderAdminMatches(); renderPublicMatches(); updateProgressUI();
+                renderAdminMatches(); renderPublicMatches(); updateProgressUI(); fireConfetti();
                 Swal.fire({icon: 'success', title: 'บันทึกสกอร์สำเร็จ', timer: 1500, showConfirmButton: false});
             } catch (err) { Swal.fire('ข้อผิดพลาด', err.message, 'error'); }
         }
@@ -900,7 +935,7 @@
             document.getElementById('dashboard-leaderboard-body').innerHTML = html;
         }
 
-        // 🌟 อัปเดต Progress จากตารางแมตช์แข่ง (Matches)
+        // 🌟 อัปเดต Progress 
         function updateProgressUI() {
             const totalMatches = db.matches.length;
             const completedMatches = db.matches.filter(m => m.status === 'completed').length;
@@ -923,7 +958,7 @@
 
             const circle = document.querySelector('.progress-ring__circle');
             if (circle) {
-                const radius = circle.r.baseVal.value; // ควรจะเป็น 100
+                const radius = circle.r.baseVal.value; 
                 const circumference = radius * 2 * Math.PI;
                 circle.style.strokeDasharray = `${circumference} ${circumference}`;
                 const offset = circumference - (percent / 100) * circumference;
