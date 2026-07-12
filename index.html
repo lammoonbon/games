@@ -658,6 +658,9 @@
                     supabase.from('matches').select('*').order('match_date', { ascending: true }).order('match_time', { ascending: true })
                 ]);
 
+                // แจ้งเตือนใน Console หากตารางยังไม่ถูกสร้าง
+                if (resMatches && resMatches.error) console.warn("Matches Error:", resMatches.error.message);
+
                 db.settings = resSettings.data || { site_name: 'กีฬากลุ่มเครือข่ายสัมพันธ์', site_logo: 'https://cdn-icons-png.flaticon.com/512/5551/5551284.png', site_theme: 'default', admin_pin: '1234' };
                 db.schools = resSchools.data || [];
                 db.sportsList = resSports.data ? resSports.data.map(s => s.name) : [];
@@ -682,12 +685,21 @@
                 renderAdminMatches();
                 updateAdminStats();
 
-                document.getElementById('loadingScreen').style.opacity = '0';
-                setTimeout(() => document.getElementById('loadingScreen').style.display = 'none', 500);
+                hideLoadingScreen();
 
             } catch (error) {
                 console.error("Error fetching data:", error);
-                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้', 'error');
+                hideLoadingScreen(); // บังคับปิดหน้าโหลดแม้เกิด Error
+                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้ กรุณาตรวจสอบว่าสร้างตารางครบแล้ว', 'error');
+            }
+        }
+
+        // ฟังก์ชันช่วยปิดหน้าโหลด
+        function hideLoadingScreen() {
+            const loader = document.getElementById('loadingScreen');
+            if (loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
             }
         }
 
@@ -726,79 +738,9 @@
         function sortSchoolsByMedals() { db.schools.sort((a, b) => { if (b.gold !== a.gold) return b.gold - a.gold; if (b.silver !== a.silver) return b.silver - a.silver; if (b.bronze !== a.bronze) return b.bronze - a.bronze; return b.total - a.total; }); }
         function calculateTotals() { let tGold = 0, tSilver = 0, tBronze = 0; db.schools.forEach(s => { tGold += s.gold; tSilver += s.silver; tBronze += s.bronze; }); return { tGold, tSilver, tBronze, total: tGold + tSilver + tBronze }; }
         function getSchoolLogo(name) { const school = db.schools.find(s => s.name === name); return school ? school.logo : 'https://ui-avatars.com/api/?name=?&background=random'; }
-        function getShortSchoolName(name) { return name.replace('โรงเรียน', 'ร.ร.'); }
-
-        // ==========================================
-        // 🌟 ส่วนตารางแมตช์การแข่งขัน (Matches)
-        // ==========================================
-        function filterPublicMatches(status) {
-            if(status) currentMatchFilter = status;
-            ['btnFilterAllMatches', 'btnFilterScheduled', 'btnFilterCompleted'].forEach(id => {
-                document.getElementById(id).classList.remove('btn-primary', 'active');
-                document.getElementById(id).classList.add('text-muted');
-            });
-            let activeBtn = currentMatchFilter === 'all' ? 'btnFilterAllMatches' : (currentMatchFilter === 'scheduled' ? 'btnFilterScheduled' : 'btnFilterCompleted');
-            document.getElementById(activeBtn).classList.remove('text-muted');
-            document.getElementById(activeBtn).classList.add('btn-primary', 'active');
-            renderPublicMatches();
-        }
-
-        function renderPublicMatches() {
-            const filterSport = document.getElementById('filterMatchSport').value; 
-            const searchTxt = document.getElementById('searchMatch').value.toLowerCase(); 
-            let html = "";
-            
-            let filtered = db.matches.filter(m => 
-                (filterSport === 'all' || !filterSport || m.sport === filterSport) && 
-                (currentMatchFilter === 'all' || m.status === currentMatchFilter) &&
-                (m.team_a.toLowerCase().includes(searchTxt) || m.team_b.toLowerCase().includes(searchTxt) || m.sport.toLowerCase().includes(searchTxt))
-            );
-
-            if(filtered.length === 0) { html = `<div class="col-12 text-center py-5 text-muted"><div class="bg-white rounded-circle d-inline-flex p-4 shadow-sm mb-3"><i class="fas fa-calendar-times fa-3x text-light"></i></div><h4 class="fw-bold">ไม่พบโปรแกรมการแข่งขัน</h4></div>`; } 
-            else { 
-                filtered.forEach((m, idx) => { 
-                    let delay = (idx % 3) * 100; 
-                    let timeFmt = m.match_time.substring(0, 5) + " น.";
-                    let dateFmt = new Date(m.match_date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' });
-                    
-                    let scoreHtml = m.status === 'completed' 
-                        ? `<div class="match-score-box shadow-sm"><span class="text-primary">${m.score_a}</span> <span class="text-muted fs-5 mx-1">-</span> <span class="text-danger">${m.score_b}</span></div>`
-                        : `<div class="match-vs">VS</div>`;
-                    
-                    let statusBadge = m.status === 'completed' ? `<span class="badge bg-success shadow-sm">จบแมตช์</span>` : `<span class="badge bg-warning text-dark shadow-sm">รอแข่ง</span>`;
-
-                    html += `
-                    <div class="col-md-6 col-lg-4 animate-up" style="animation-delay: ${delay}ms">
-                        <div class="match-card h-100 p-3 p-md-4 text-center">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 fw-bold"><i class="fas fa-running me-1"></i> ${m.sport} - ${m.age_group}</span>
-                                ${statusBadge}
-                            </div>
-                            
-                            <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                                <div style="width: 40%;">
-                                    <img src="${getSchoolLogo(m.team_a)}" width="65" height="65" class="rounded-circle shadow mb-2 border border-2 border-primary object-cover">
-                                    <div class="fw-bold text-sm text-truncate text-primary">${getShortSchoolName(m.team_a)}</div>
-                                </div>
-                                <div style="width: 20%;" class="d-flex justify-content-center align-items-center">
-                                    ${scoreHtml}
-                                </div>
-                                <div style="width: 40%;">
-                                    <img src="${getSchoolLogo(m.team_b)}" width="65" height="65" class="rounded-circle shadow mb-2 border border-2 border-danger object-cover">
-                                    <div class="fw-bold text-sm text-truncate text-danger">${getShortSchoolName(m.team_b)}</div>
-                                </div>
-                            </div>
-
-                            <div class="bg-light dark:bg-gray-700 rounded-3 p-2 text-muted small fw-bold d-flex justify-content-around">
-                                <span><i class="far fa-calendar-alt text-primary"></i> ${dateFmt}</span>
-                                <span><i class="far fa-clock text-warning"></i> ${timeFmt}</span>
-                                <span class="text-truncate" style="max-width:40%;"><i class="fas fa-map-marker-alt text-danger"></i> ${m.venue}</span>
-                            </div>
-                        </div>
-                    </div>`; 
-                }); 
-            }
-            document.getElementById('publicMatchesContainer').innerHTML = html;
+        function getShortSchoolName(name) { 
+            if (!name) return ""; 
+            return name.replace('โรงเรียน', 'ร.ร.'); 
         }
 
         // ==========================================
@@ -1080,6 +1022,9 @@
             html2pdf().set(opt).from(element).save().then(() => { Swal.fire({ icon: 'success', title: 'ดาวน์โหลดสำเร็จ', timer: 1500, showConfirmButton: false }); });
         }
         function animateValue(id, start, end, duration) { const obj = document.getElementById(id); if(!obj) return; let startTimestamp = null; const step = (timestamp) => { if (!startTimestamp) startTimestamp = timestamp; const progress = Math.min((timestamp - startTimestamp) / duration, 1); obj.innerHTML = Math.floor(progress * (end - start) + start); if (progress < 1) { window.requestAnimationFrame(step); } }; window.requestAnimationFrame(step); }
+        
+        // ฟังก์ชันจุดพลุฉลอง
+        function fireConfetti() { var duration = 2.5 * 1000; var animationEnd = Date.now() + duration; var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000 }; function randomInRange(min, max) { return Math.random() * (max - min) + min; } var interval = setInterval(function() { var timeLeft = animationEnd - Date.now(); if (timeLeft <= 0) { return clearInterval(interval); } var particleCount = 50 * (timeLeft / duration); confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } })); confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } })); }, 250); }
     </script>
 </body>
 </html>
