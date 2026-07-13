@@ -167,7 +167,7 @@
     <div id="loadingScreen" class="loading-overlay">
         <div class="spinner-border text-primary spinner-border-xl mb-3" role="status"></div>
         <h4 class="fw-bold text-primary">กำลังโหลดระบบ...</h4>
-        <small class="text-muted mt-2">หากค้างเกิน 8 วินาที ระบบจะเข้าสู่หน้าเว็บอัตโนมัติ</small>
+        <small class="text-muted mt-2" id="loadingText">เชื่อมต่อฐานข้อมูล...</small>
     </div>
 
     <!-- Navbar -->
@@ -197,7 +197,6 @@
             </div>
             
             <div class="collapse navbar-collapse" id="navbarNav">
-                <!-- ยกเลิกการซ่อน d-none เพื่อให้ทุกคนเห็นเมนู -->
                 <ul class="navbar-nav me-auto ps-lg-4 mt-3 mt-lg-0" id="main-nav-links">
                     <li class="nav-item"><a class="nav-link fw-bold text-uppercase px-3" href="#" onclick="switchView('public-dashboard')">หน้าแรก</a></li>
                     <li class="nav-item"><a class="nav-link fw-bold text-uppercase px-3" href="#" onclick="switchView('public-medals')">ตารางเหรียญ</a></li>
@@ -208,7 +207,6 @@
     </nav>
 
     <main class="container-fluid px-0">
-        
         <!-- ================= PUBLIC DASHBOARD ================= -->
         <div id="public-dashboard" class="view-section active">
             <div class="hero-banner text-center px-3" id="mainHeroBanner">
@@ -307,7 +305,7 @@
             </div>
         </div>
 
-        <!-- ================= PUBLIC RESULTS (สรุปเหรียญรายกีฬา) ================= -->
+        <!-- ================= PUBLIC RESULTS ================= -->
         <div id="public-results" class="view-section container mt-5 min-h-screen">
             <div class="text-center mb-5 animate-up">
                 <h1 class="fw-black text-gradient-gold text-5xl mb-2">สรุปเหรียญรายกีฬา</h1>
@@ -400,7 +398,7 @@
                             <div class="card-body p-4 p-lg-5">
                                 <form onsubmit="saveSiteSettings(event)">
                                     <div class="mb-4"><label class="form-label fw-bold dark:text-white">ชื่อเว็บไซต์ (แสดงที่หน้าแรกและด้านบน)</label><input type="text" class="form-control form-control-lg bg-light" id="settingSiteName" required></div>
-                                    <div class="mb-4"><label class="form-label fw-bold dark:text-white">โลโก้เว็บไซต์ (URL รูปภาพ)</label><input type="url" class="form-control form-control-lg bg-light" id="settingSiteLogo" required></div>
+                                    <div class="mb-4"><label class="form-label fw-bold dark:text-white">โลโก้เว็บไซต์ (URL รูปภาพ / ทำเป็น Favicon ด้วย)</label><input type="url" class="form-control form-control-lg bg-light" id="settingSiteLogo" required></div>
                                     <div class="mb-4"><label class="form-label fw-bold dark:text-white">ชุดสีหลัก (Theme Color)</label><select class="form-select form-select-lg bg-light" id="settingSiteTheme"><option value="default">สดใส (แดง - น้ำเงิน)</option><option value="ocean">มหาสมุทร (เขียว - ฟ้า)</option><option value="royal">หรูหรา (ม่วงเข้ม - แดงเข้ม)</option><option value="midnight">เคร่งขรึม (ดำ - เทาเข้ม)</option></select></div>
                                     <div class="mb-5"><label class="form-label fw-bold text-danger">รหัส PIN เจ้าหน้าที่ (ตัวเลขเท่านั้น)</label><input type="password" class="form-control form-control-lg border-danger" id="settingAdminPin" required pattern="[0-9]*" title="กรุณากรอกเฉพาะตัวเลข"></div>
                                     <div class="border-top pt-4 text-end"><button type="submit" class="btn btn-primary btn-lg px-5 fw-bold rounded-pill shadow-lg bg-gradient-to-r from-blue-500 to-indigo-600 border-0"><i class="fas fa-save me-2"></i> บันทึกข้อมูลไปยัง Supabase</button></div>
@@ -448,7 +446,7 @@
 
         let isAdminLoggedIn = false; let fallbackTimer;
 
-        // ฟังก์ชันช่วยปิดหน้าโหลดอย่างปลอดภัย
+        // ฟังก์ชันช่วยปิดหน้าโหลดอย่างปลอดภัย (Fail-safe)
         function hideLoadingScreen() {
             const loader = document.getElementById('loadingScreen');
             if (loader) {
@@ -462,8 +460,11 @@
             document.getElementById('inputDate').valueAsDate = new Date();
             document.getElementById('currentYear').innerText = new Date().getFullYear() + 543;
             
-            // ตั้งเวลาฉุกเฉิน (Fail-safe) ป้องกันค้าง
-            fallbackTimer = setTimeout(() => { hideLoadingScreen(); }, 8000);
+            // ตั้งเวลาฉุกเฉิน 8 วินาที หากดึงข้อมูลไม่สำเร็จให้ปิดหน้าโหลดอัตโนมัติ
+            fallbackTimer = setTimeout(() => { 
+                document.getElementById('loadingText').innerText = "การเชื่อมต่อล่าช้า กำลังเข้าสู่หน้าเว็บ...";
+                hideLoadingScreen(); 
+            }, 8000);
             fetchData();
         });
 
@@ -478,7 +479,9 @@
                     supabase.from('results').select('*')
                 ]);
 
-                if (resSettings.error && resSettings.error.code !== 'PGRST116') console.warn("Settings Data Error:", resSettings.error.message);
+                if (resSettings.error && resSettings.error.code !== 'PGRST116') {
+                    console.warn("Settings Data Error:", resSettings.error.message);
+                }
 
                 db.settings = resSettings.data || { site_name: 'กีฬากลุ่มเครือข่ายสัมพันธ์', site_logo: 'https://cdn-icons-png.flaticon.com/512/5551/5551284.png', site_theme: 'default', admin_pin: '1234' };
                 db.schools = resSchools.data || [];
@@ -501,16 +504,16 @@
                 renderAdminSchools();
                 updateAdminStats();
 
-                hideLoadingScreen();
+                hideLoadingScreen(); // ปิดหน้าจอโหลดเมื่อสำเร็จ
 
             } catch (error) {
                 console.error("Critical Fetch Error:", error);
                 hideLoadingScreen();
-                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้', 'error');
+                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถดึงข้อมูลจากฐานข้อมูลได้', 'warning');
             }
         }
 
-        // นำการตั้งค่าไปใช้
+        // นำการตั้งค่าไปใช้ และเปลี่ยน Favicon
         function applySettings() {
             if(!db.settings) return;
             const root = document.documentElement;
@@ -521,8 +524,14 @@
             document.title = db.settings.site_name;
             
             const logoEl = document.getElementById('displaySiteLogo'); if(logoEl) logoEl.src = db.settings.site_logo;
+            
+            // สร้างหรืออัปเดต Favicon (บาร์บีคอน) อัตโนมัติตามรูปโลโก้
             let favicon = document.querySelector("link[rel~='icon']");
-            if (!favicon) { favicon = document.createElement('link'); favicon.rel = 'icon'; document.head.appendChild(favicon); }
+            if (!favicon) { 
+                favicon = document.createElement('link'); 
+                favicon.rel = 'icon'; 
+                document.head.appendChild(favicon); 
+            }
             favicon.href = db.settings.site_logo;
 
             if(document.getElementById('settingSiteName')) {
@@ -654,7 +663,33 @@
         
         function switchView(viewId) { document.querySelectorAll('.view-section').forEach(el => { el.classList.remove('active'); el.classList.remove('animate-up');}); const view = document.getElementById(viewId); view.classList.add('active'); view.querySelectorAll('.animate-up').forEach(el => { el.style.animation = 'none'; el.offsetHeight; el.style.animation = null; }); window.scrollTo({ top: 0, behavior: 'smooth' }); if(viewId === 'public-dashboard') renderPublicDashboard(); const nav = document.getElementById('navbarNav'); if (nav.classList.contains('show')) document.querySelector('.navbar-toggler').click(); }
         function toggleDarkMode() { document.body.classList.toggle('dark-mode'); const icon = document.getElementById('darkModeIcon'); if(document.body.classList.contains('dark-mode')) { icon.classList.replace('fa-moon', 'fa-sun'); } else { icon.classList.replace('fa-sun', 'fa-moon'); } }
-        function showAdminLogin() { const nav = document.getElementById('navbarNav'); if (nav.classList.contains('show')) document.querySelector('.navbar-toggler').click(); Swal.fire({ title: '<span class="fw-bold">เข้าสู่ระบบจัดการ</span>', html: '<p class="text-muted">กรุณากรอกรหัส PIN</p>', input: 'password', showCancelButton: true, confirmButtonText: 'เข้าสู่ระบบ', cancelButtonText: 'ยกเลิก', confirmButtonColor: '#0A2463', borderRadius: '1rem', preConfirm: (pin) => { return pin === db.settings.admin_pin ? true : Swal.showValidationMessage('PIN ไม่ถูกต้อง!'); } }).then((res) => { if (res.isConfirmed) { isAdminLoggedIn = true; fireConfetti(); document.getElementById('btnLogin').classList.add('d-none'); document.getElementById('btnLogoutTop').classList.remove('d-none'); Swal.fire({icon: 'success', title: 'สำเร็จ', timer: 1000, showConfirmButton: false}).then(() => { switchView('admin-dashboard'); updateAdminStats(); }); } }); }
+        
+        function showAdminLogin() { 
+            const nav = document.getElementById('navbarNav'); 
+            if (nav.classList.contains('show')) document.querySelector('.navbar-toggler').click(); 
+            Swal.fire({ 
+                title: '<span class="fw-bold">เข้าสู่ระบบจัดการ</span>', 
+                html: '<p class="text-muted">กรุณากรอกรหัส PIN</p>', 
+                input: 'password', 
+                showCancelButton: true, 
+                confirmButtonText: 'เข้าสู่ระบบ', 
+                cancelButtonText: 'ยกเลิก', 
+                confirmButtonColor: '#0A2463', 
+                borderRadius: '1rem', 
+                preConfirm: (pin) => { return pin === db.settings.admin_pin ? true : Swal.showValidationMessage('PIN ไม่ถูกต้อง!'); } 
+            }).then((res) => { 
+                if (res.isConfirmed) { 
+                    isAdminLoggedIn = true; 
+                    fireConfetti(); 
+                    document.getElementById('btnLogin').classList.add('d-none'); 
+                    document.getElementById('btnLogoutTop').classList.remove('d-none'); 
+                    Swal.fire({icon: 'success', title: 'สำเร็จ', timer: 1000, showConfirmButton: false}).then(() => { 
+                        switchView('admin-dashboard'); updateAdminStats(); 
+                    }); 
+                } 
+            }); 
+        }
+
         function logoutAdmin() { Swal.fire({ title: 'ออกจากระบบ?', icon: 'question', showCancelButton: true, confirmButtonText: 'ใช่', confirmButtonColor: '#D8315B' }).then((res) => { if(res.isConfirmed) { isAdminLoggedIn = false; document.getElementById('btnLogin').classList.remove('d-none'); document.getElementById('btnLogoutTop').classList.add('d-none'); switchView('public-dashboard'); } }); }
         function showAdminTab(tabId) { document.querySelectorAll('.admin-tab').forEach(el => el.style.display = 'none'); const tab = document.getElementById(tabId); tab.style.display = 'block'; tab.classList.add('animate-up'); document.querySelectorAll('#admin-dashboard .list-group-item').forEach(btn => btn.classList.remove('active', 'shadow-sm')); event.currentTarget.classList.add('active', 'shadow-sm'); }
         
@@ -680,6 +715,7 @@
             const opt = { margin: 15, filename: 'รายงานผลการแข่งขัน.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 1024 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
             html2pdf().set(opt).from(element).save().then(() => { Swal.fire({ icon: 'success', title: 'ดาวน์โหลดสำเร็จ', timer: 1500, showConfirmButton: false }); });
         }
+        
         function animateValue(id, start, end, duration) { const obj = document.getElementById(id); if(!obj) return; let startTimestamp = null; const step = (timestamp) => { if (!startTimestamp) startTimestamp = timestamp; const progress = Math.min((timestamp - startTimestamp) / duration, 1); obj.innerHTML = Math.floor(progress * (end - start) + start); if (progress < 1) { window.requestAnimationFrame(step); } }; window.requestAnimationFrame(step); }
         
         function fireConfetti() { var duration = 2.5 * 1000; var animationEnd = Date.now() + duration; var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000 }; function randomInRange(min, max) { return Math.random() * (max - min) + min; } var interval = setInterval(function() { var timeLeft = animationEnd - Date.now(); if (timeLeft <= 0) { return clearInterval(interval); } var particleCount = 50 * (timeLeft / duration); confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } })); confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } })); }, 250); }
