@@ -207,9 +207,9 @@
         <h4 class="fw-bold mt-3 text-primary">กำลังเตรียมข้อมูล...</h4>
     </div>
 
-    <!-- Navbar (แก้ไขโครงสร้างเพื่อคอมพิวเตอร์) -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
-        <div class="container">
+    <!-- Navbar (แก้ไขเพื่อบังคับแสดงปุ่ม 3 ขีดเสมอในทุกขนาดหน้าจอ) -->
+    <nav class="navbar navbar-dark navbar-custom sticky-top">
+        <div class="container d-flex flex-wrap align-items-center justify-content-between">
             <a class="navbar-brand font-bold text-2xl d-flex align-items-center" href="#" onclick="switchView('public-dashboard')">
                 <div class="bg-gradient-to-tr from-yellow-400 to-orange-500 p-1 rounded-circle me-2 d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 38px; height: 38px;">
                     <i class="fas fa-trophy text-white" style="font-size: 1.2rem;"></i>
@@ -218,7 +218,7 @@
                 <span class="navbar-title-text d-inline d-sm-none text-xl">SPORTS</span>
             </a>
             
-            <div class="d-flex align-items-center gap-2 gap-md-3 ms-auto order-lg-last">
+            <div class="d-flex align-items-center gap-2 gap-md-3 ms-auto">
                 <button class="btn btn-sm btn-outline-light rounded-pill px-2 px-md-3" onclick="toggleDarkMode()">
                     <i class="fas fa-moon" id="darkModeIcon"></i><span class="d-none d-md-inline ms-1"> โหมดกลางคืน</span>
                 </button>
@@ -229,17 +229,18 @@
                     <i class="fas fa-sign-out-alt me-1"></i><span class="d-none d-sm-inline"> ออกระบบ</span>
                 </button>
                 
-                <button class="navbar-toggler border-0 px-1 ms-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <!-- บังคับแสดงปุ่ม 3 ขีดด้วย d-block เสมอ -->
+                <button class="navbar-toggler border-0 px-1 ms-1 d-block" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
             </div>
             
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto ps-lg-4" id="main-nav-links">
-                    <li class="nav-item"><a class="nav-link fw-bold text-uppercase px-3" href="#" onclick="switchView('public-dashboard')">หน้าแรก</a></li>
-                    <li class="nav-item"><a class="nav-link fw-bold text-uppercase px-3 text-warning" href="#" onclick="switchView('public-matches')">โปรแกรม & ผลแข่ง</a></li>
-                    <li class="nav-item"><a class="nav-link fw-bold text-uppercase px-3" href="#" onclick="switchView('public-medals')">ตารางเหรียญ</a></li>
-                    <li class="nav-item"><a class="nav-link fw-bold text-uppercase px-3" href="#" onclick="switchView('public-results')">สรุปผลแจกเหรียญ</a></li>
+            <div class="collapse navbar-collapse w-100" id="navbarNav">
+                <ul class="navbar-nav w-100 text-center mt-3 bg-dark bg-opacity-25 rounded-4 p-2 shadow-sm border border-white border-opacity-10" id="main-nav-links">
+                    <li class="nav-item"><a class="nav-link fw-bold text-uppercase px-3 py-2" href="#" onclick="switchView('public-dashboard')">หน้าแรก</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold text-uppercase px-3 py-2 text-warning" href="#" onclick="switchView('public-matches')">โปรแกรม & ผลแข่ง</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold text-uppercase px-3 py-2" href="#" onclick="switchView('public-medals')">ตารางเหรียญ</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold text-uppercase px-3 py-2" href="#" onclick="switchView('public-results')">สรุปผลแจกเหรียญ</a></li>
                 </ul>
             </div>
         </div>
